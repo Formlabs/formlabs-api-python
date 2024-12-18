@@ -4,6 +4,7 @@ Handwritten convenience wrapper around the generated Python library code
 from contextlib import contextmanager
 import subprocess
 import os
+import shlex
 import sys
 import threading
 import queue
@@ -15,11 +16,14 @@ class PreFormApi:
         self.preform_port = preform_port
 
     @staticmethod
-    def start_preform_sync(pathToPreformServer=None, preform_port=44388):
+    def start_preform_sync(pathToPreformServer=None, preform_port=44388, command_prefix=None):
         preformserver_path = _find_preform_server(pathToPreformServer)
 
+        command_str = f"{preformserver_path} --port {preform_port}"
+        if command_prefix:
+            command_str = f"{command_prefix} {command_str}"
         server_process = subprocess.Popen(
-            [preformserver_path, "--port", str(preform_port)],
+            shlex.split(command_str),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True)
@@ -48,10 +52,10 @@ class PreFormApi:
     # TODO: start_preform_server_if_needed
     @contextmanager
     @staticmethod
-    def start_preform_server(pathToPreformServer=None, preform_port=44388):
+    def start_preform_server(pathToPreformServer=None, preform_port=44388, command_prefix=None):
         preformApi = None
         try:
-            preformApi = PreFormApi.start_preform_sync(pathToPreformServer, preform_port)
+            preformApi = PreFormApi.start_preform_sync(pathToPreformServer, preform_port, command_prefix)
             print("PreForm server ready")
             yield preformApi
             return
