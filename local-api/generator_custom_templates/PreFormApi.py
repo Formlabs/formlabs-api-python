@@ -27,8 +27,11 @@ class PreFormApi:
         command_str = f"{preformserver_path} --port {preform_port}"
         if command_prefix:
             command_str = f"{command_prefix} {command_str}"
+        process_args = shlex.split(command_str)
+        if sys.platform == "win32":
+            process_args = command_str
         server_process = subprocess.Popen(
-            shlex.split(command_str),
+            process_args,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True)
