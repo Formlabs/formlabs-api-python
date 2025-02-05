@@ -47,7 +47,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def call_print_0(
+    def call_print(
         self,
         print_request: PrintRequest,
         var_async: Annotated[Optional[StrictBool], Field(description="Whether to run the operation asynchronously")] = None,
@@ -94,7 +94,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._call_print_0_serialize(
+        _param = self._call_print_serialize(
             print_request=print_request,
             var_async=var_async,
             _request_auth=_request_auth,
@@ -119,7 +119,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def call_print_0_with_http_info(
+    def call_print_with_http_info(
         self,
         print_request: PrintRequest,
         var_async: Annotated[Optional[StrictBool], Field(description="Whether to run the operation asynchronously")] = None,
@@ -166,7 +166,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._call_print_0_serialize(
+        _param = self._call_print_serialize(
             print_request=print_request,
             var_async=var_async,
             _request_auth=_request_auth,
@@ -191,7 +191,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def call_print_0_without_preload_content(
+    def call_print_without_preload_content(
         self,
         print_request: PrintRequest,
         var_async: Annotated[Optional[StrictBool], Field(description="Whether to run the operation asynchronously")] = None,
@@ -238,7 +238,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._call_print_0_serialize(
+        _param = self._call_print_serialize(
             print_request=print_request,
             var_async=var_async,
             _request_auth=_request_auth,
@@ -258,7 +258,7 @@ class RemoteAccessApi:
         return response_data.response
 
 
-    def _call_print_0_serialize(
+    def _call_print_serialize(
         self,
         print_request,
         var_async,
@@ -340,7 +340,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def discover_devices_0(
+    def discover_devices(
         self,
         discover_devices_request: DiscoverDevicesRequest,
         _request_timeout: Union[
@@ -384,7 +384,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._discover_devices_0_serialize(
+        _param = self._discover_devices_serialize(
             discover_devices_request=discover_devices_request,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -408,7 +408,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def discover_devices_0_with_http_info(
+    def discover_devices_with_http_info(
         self,
         discover_devices_request: DiscoverDevicesRequest,
         _request_timeout: Union[
@@ -452,7 +452,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._discover_devices_0_serialize(
+        _param = self._discover_devices_serialize(
             discover_devices_request=discover_devices_request,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -476,7 +476,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def discover_devices_0_without_preload_content(
+    def discover_devices_without_preload_content(
         self,
         discover_devices_request: DiscoverDevicesRequest,
         _request_timeout: Union[
@@ -520,7 +520,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._discover_devices_0_serialize(
+        _param = self._discover_devices_serialize(
             discover_devices_request=discover_devices_request,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -539,7 +539,7 @@ class RemoteAccessApi:
         return response_data.response
 
 
-    def _discover_devices_0_serialize(
+    def _discover_devices_serialize(
         self,
         discover_devices_request,
         _request_auth,
@@ -616,7 +616,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def get_device_0(
+    def get_device(
         self,
         id: Annotated[StrictStr, Field(description="The unique identifier of the printer")],
         _request_timeout: Union[
@@ -660,7 +660,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_device_0_serialize(
+        _param = self._get_device_serialize(
             id=id,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -684,7 +684,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def get_device_0_with_http_info(
+    def get_device_with_http_info(
         self,
         id: Annotated[StrictStr, Field(description="The unique identifier of the printer")],
         _request_timeout: Union[
@@ -728,7 +728,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_device_0_serialize(
+        _param = self._get_device_serialize(
             id=id,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -752,7 +752,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def get_device_0_without_preload_content(
+    def get_device_without_preload_content(
         self,
         id: Annotated[StrictStr, Field(description="The unique identifier of the printer")],
         _request_timeout: Union[
@@ -796,7 +796,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_device_0_serialize(
+        _param = self._get_device_serialize(
             id=id,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -815,7 +815,7 @@ class RemoteAccessApi:
         return response_data.response
 
 
-    def _get_device_0_serialize(
+    def _get_device_serialize(
         self,
         id,
         _request_auth,
@@ -879,7 +879,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def get_devices_0(
+    def get_devices(
         self,
         _request_timeout: Union[
             None,
@@ -920,7 +920,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_devices_0_serialize(
+        _param = self._get_devices_serialize(
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -943,7 +943,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def get_devices_0_with_http_info(
+    def get_devices_with_http_info(
         self,
         _request_timeout: Union[
             None,
@@ -984,7 +984,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_devices_0_serialize(
+        _param = self._get_devices_serialize(
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1007,7 +1007,7 @@ class RemoteAccessApi:
 
 
     @validate_call
-    def get_devices_0_without_preload_content(
+    def get_devices_without_preload_content(
         self,
         _request_timeout: Union[
             None,
@@ -1048,7 +1048,7 @@ class RemoteAccessApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._get_devices_0_serialize(
+        _param = self._get_devices_serialize(
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -1066,7 +1066,7 @@ class RemoteAccessApi:
         return response_data.response
 
 
-    def _get_devices_0_serialize(
+    def _get_devices_serialize(
         self,
         _request_auth,
         _content_type,

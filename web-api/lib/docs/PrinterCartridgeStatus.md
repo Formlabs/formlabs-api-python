@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **cartridge** | [**CartridgeReadOnly**](CartridgeReadOnly.md) |  | [readonly] 
 **last_modified** | **datetime** |  | [readonly] 
-**cartridge_slot** | [**PrinterCartridgeStatusCartridgeSlot**](PrinterCartridgeStatusCartridgeSlot.md) |  | [optional] 
+**cartridge_slot** | [**CartridgeSlotEnum**](CartridgeSlotEnum.md) |  | [optional] 
 
 ## Example
 

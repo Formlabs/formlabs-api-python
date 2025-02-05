@@ -26,29 +26,29 @@ class TestRemoteAccessApi(unittest.TestCase):
     def tearDown(self) -> None:
         pass
 
-    def test_call_print_0(self) -> None:
-        """Test case for call_print_0
+    def test_call_print(self) -> None:
+        """Test case for call_print
 
         Print
         """
         pass
 
-    def test_discover_devices_0(self) -> None:
-        """Test case for discover_devices_0
+    def test_discover_devices(self) -> None:
+        """Test case for discover_devices
 
         Discover Devices
         """
         pass
 
-    def test_get_device_0(self) -> None:
-        """Test case for get_device_0
+    def test_get_device(self) -> None:
+        """Test case for get_device
 
         Get Device
         """
         pass
 
-    def test_get_devices_0(self) -> None:
-        """Test case for get_devices_0
+    def test_get_devices(self) -> None:
+        """Test case for get_devices
 
         Get Devices
         """

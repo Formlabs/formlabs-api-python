@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:44388*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**call_print_1**](OperationsApi.md#call_print_1) | **POST** /scene/print/ | Print
+[**call_print**](OperationsApi.md#call_print) | **POST** /scene/print/ | Print
 [**get_all_operations**](OperationsApi.md#get_all_operations) | **GET** /operations/ | List All Operations
 [**get_operation**](OperationsApi.md#get_operation) | **GET** /operations/{id}/ | Get Operation Status
 
 
-# **call_print_1**
-> Print200Response call_print_1(print_request, var_async=var_async)
+# **call_print**
+> Print200Response call_print(print_request, var_async=var_async)
 
 Print
 
@@ -42,11 +42,11 @@ with formlabs_local_api.ApiClient(configuration) as api_client:
 
     try:
         # Print
-        api_response = api_instance.call_print_1(print_request, var_async=var_async)
-        print("The response of OperationsApi->call_print_1:\n")
+        api_response = api_instance.call_print(print_request, var_async=var_async)
+        print("The response of OperationsApi->call_print:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling OperationsApi->call_print_1: %s\n" % e)
+        print("Exception when calling OperationsApi->call_print: %s\n" % e)
 ```
 
 

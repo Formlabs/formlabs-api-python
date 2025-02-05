@@ -26,8 +26,8 @@ class TestOperationsApi(unittest.TestCase):
     def tearDown(self) -> None:
         pass
 
-    def test_call_print_1(self) -> None:
-        """Test case for call_print_1
+    def test_call_print(self) -> None:
+        """Test case for call_print
 
         Print
         """

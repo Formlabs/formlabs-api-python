@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Formlabs Web API
-  version: 0.8.0
+  version: 0.8.1
   x-logo:
     url: https://formlabs-dashboard-api-resources.s3.amazonaws.com/Formlabs-Logo-rgb-black.svg
     altText: Formlabs Logo
@@ -318,14 +318,21 @@ paths:
         name: status
         schema:
           type: string
-        description: "Filter by status of the print. Possible values are:        \
-          \   \n          * `QUEUED` - Queued    \n          * `PREPRINT` - Preprint\
-          \    \n          * `PRINTING` - Printing  \n          * `PAUSED` - Paused\
-          \  \n          * `FINISHED` - Finished  \n          * `ABORTING` - Aborting\
-          \  \n          * `ABORTED` - Aborted  \n          * `ERROR` - Error  \n\
-          \          * `WAITING_FOR_RESOLUTION` - Waiting for Resolution  \n     \
-          \     * `PREHEAT` - Preheat  \n          * `PRECOAT` - Precoat  \n     \
-          \     * `POSTCOAT` - Postcoat"
+        description: |-
+          Filter by status of the print. Possible values are:
+                    * `QUEUED` - Queued
+                    * `PREPRINT` - Preprint
+                    * `PRINTING` - Printing
+                    * `PAUSING` - Pausing
+                    * `PAUSED` - Paused
+                    * `FINISHED` - Finished
+                    * `ABORTING` - Aborting
+                    * `ABORTED` - Aborted
+                    * `ERROR` - Error
+                    * `WAITING_FOR_RESOLUTION` - Waiting for Resolution
+                    * `PREHEAT` - Preheat
+                    * `PRECOAT` - Precoat
+                    * `POSTCOAT` - Postcoat
       tags:
       - Prints
       security:
@@ -433,14 +440,21 @@ paths:
         name: status
         schema:
           type: string
-        description: "Filter by status of the print. Possible values are:        \
-          \   \n          * `QUEUED` - Queued    \n          * `PREPRINT` - Preprint\
-          \    \n          * `PRINTING` - Printing  \n          * `PAUSED` - Paused\
-          \  \n          * `FINISHED` - Finished  \n          * `ABORTING` - Aborting\
-          \  \n          * `ABORTED` - Aborted  \n          * `ERROR` - Error  \n\
-          \          * `WAITING_FOR_RESOLUTION` - Waiting for Resolution  \n     \
-          \     * `PREHEAT` - Preheat  \n          * `PRECOAT` - Precoat  \n     \
-          \     * `POSTCOAT` - Postcoat"
+        description: |-
+          Filter by status of the print. Possible values are:
+                    * `QUEUED` - Queued
+                    * `PREPRINT` - Preprint
+                    * `PRINTING` - Printing
+                    * `PAUSING` - Pausing
+                    * `PAUSED` - Paused
+                    * `FINISHED` - Finished
+                    * `ABORTING` - Aborting
+                    * `ABORTED` - Aborted
+                    * `ERROR` - Error
+                    * `WAITING_FOR_RESOLUTION` - Waiting for Resolution
+                    * `PREHEAT` - Preheat
+                    * `PRECOAT` - Precoat
+                    * `POSTCOAT` - Postcoat
       tags:
       - Prints
       security:
@@ -829,9 +843,6 @@ components:
       required:
       - id
       - username
-    BlankEnum:
-      enum:
-      - ''
     BuildPlatformContentsEnum:
       enum:
       - BUILD_PLATFORM_CONTENTS_NOT_SUPPORTED
@@ -944,6 +955,9 @@ components:
           type: string
           readOnly: true
           nullable: true
+        consumable_type:
+          type: string
+          readOnly: true
         initial_volume_ml:
           type: number
           format: double
@@ -980,6 +994,7 @@ components:
           readOnly: true
       required:
       - connected_group
+      - consumable_type
       - created_at
       - initial_volume_ml
       - inside_printer
@@ -1350,9 +1365,6 @@ components:
         adaptive_thickness:
           type: boolean
           readOnly: true
-        probably_finished:
-          type: boolean
-          readOnly: true
         message:
           type: string
           readOnly: true
@@ -1379,11 +1391,10 @@ components:
           readOnly: true
           nullable: true
         harvest_status:
+          allOf:
+          - $ref: '#/components/schemas/HarvestStatusEnum'
           readOnly: true
           nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/HarvestStatusEnum'
-          - $ref: '#/components/schemas/NullEnum'
       required:
       - adaptive_thickness
       - back_cartridge
@@ -1417,7 +1428,6 @@ components:
       - print_started_at
       - print_thumbnail
       - printer
-      - probably_finished
       - status
       - tank
       - user
@@ -1450,9 +1460,6 @@ components:
       - created_at
       - id
       - name
-    NullEnum:
-      enum:
-      - null
     PaginatedCartridgeList:
       type: object
       properties:
@@ -1758,9 +1765,6 @@ components:
         adaptive_thickness:
           type: boolean
           readOnly: true
-        probably_finished:
-          type: boolean
-          readOnly: true
         message:
           type: string
           readOnly: true
@@ -1792,11 +1796,10 @@ components:
           readOnly: true
           nullable: true
         harvest_status:
+          allOf:
+          - $ref: '#/components/schemas/HarvestStatusEnum'
           readOnly: true
           nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/HarvestStatusEnum'
-          - $ref: '#/components/schemas/NullEnum'
         parts:
           type: array
           items:
@@ -1837,7 +1840,6 @@ components:
       - print_started_at
       - print_thumbnail
       - printer
-      - probably_finished
       - status
       - tank
       - user
@@ -1865,9 +1867,7 @@ components:
           format: date-time
           readOnly: true
         cartridge_slot:
-          oneOf:
-          - $ref: '#/components/schemas/CartridgeSlotEnum'
-          - $ref: '#/components/schemas/BlankEnum'
+          $ref: '#/components/schemas/CartridgeSlotEnum'
       required:
       - cartridge
       - last_modified
@@ -1916,6 +1916,7 @@ components:
       - PREPRINT
       - PRINTING
       - PAUSED
+      - PAUSING
       - FINISHED
       - ABORTING
       - ABORTED
@@ -1930,6 +1931,7 @@ components:
         * `PREPRINT` - Preprint
         * `PRINTING` - Printing
         * `PAUSED` - Paused
+        * `PAUSING` - Pausing
         * `FINISHED` - Finished
         * `ABORTING` - Aborting
         * `ABORTED` - Aborted

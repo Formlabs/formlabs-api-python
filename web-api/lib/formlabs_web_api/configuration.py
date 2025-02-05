@@ -5,7 +5,7 @@
 
      # Introduction  The Formlabs Web API provides access to Formlabs’ remote control and remote monitoring features for Internet-connected Formlabs products registered to your Dashboard account.  Some example use cases of the Dashboard Developer API: 1.  Create automated custom reports on Printer usage, material usage, and job history to gain more insights into print production 2.  More efficiently manage Printers by integrating Printer status data into existing systems (ERP/MES/custom) # Terms and Conditions -   Formlabs reserves the right to revoke or invalidate your API key at any time without warning. -   As a beta, conditions of access to the API may change in the future, access may be bundled into other future software products, etc. (we will make an effort to provide as much warning as possible) -   As a beta, the API may change at any time without warning in such a way that it may fail to support existing workflows (though we will make an effort to provide advanced notice where possible) -   You agree not to exceed the Dashboard Developer API rate limit as detailed in the \"Rate Limit\" section below. -   You will be given access to certain non-public information, software, and specifications that are confidential and proprietary to Formlabs. You will not share these outside your organization. -   By participating in this Beta you may be sharing information with Formlabs. Any information shared is governed by our Privacy Policy [https://formlabs.com/support/privacy-policy/](https://formlabs.com/support/privacy-policy/) -   The Dashboard Developer API works with Formlabs Printers that are connected to the internet and registered to Dashboard. Printers registered to Dashboard share data with Formlabs (detailed in the Data Collection section of the Privacy Policy: [https://formlabs.com/support/privacy-policy/#Data-Collection](https://formlabs.com/support/privacy-policy/#Data-Collection)). For more information about how to set up Printers and register them to Dashboard, see this link: [https://support.formlabs.com/s/article/Dashboard-Overview-and-Setup](https://support.formlabs.com/s/article/Dashboard-Overview-and-Setup)  # Technical Overview The Formlabs Dashboard Developer API is a REST HTTP API using JSON as the response data format.   Formlabs Dashboard Developer API is HTTP-based. Send a HTTP GET request to an endpoint to retrieve data from that endpoint. The integrating system should be able to make HTTP requests and process responses in JSON format.   Formlabs Dashboard Developer API uses the standard [OAuth Authentication Flow](https://tools.ietf.org/html/rfc6749#section-4.4), and all API endpoints require authentication. The access token created is valid for a day, so make sure to refresh the token regularly to maintain seamless integration with the Dashboard Developer API and ensure uninterrupted workflow.  ## Versioning  The Dashboard Developer API uses resource-based versioning, meaning API endpoints are versioned independently, rather than globally across all endpoints.  Formlabs may change the version of an endpoint to first keep in sync with product updates (could be an addition or a removal of data), in addition to any changes based on customer feedback to allow easier integrations.  Versioning can occur in the following situations:  -   The format of the response data is required to change -   The format of the response type is required to change  Any outstanding version changes or upgrades occurred on endpoints will be highlighted and documented.  ## Rate Limit  The rate of requests to the Dashboard Developer API is limited to prevent the abuse of the system. Requests from the same IP address are limited to **100 requests/second**. Requests from the same authenticated user are limited to **1500 requests/hour**. After a rate limit is exceeded, requests will return a HTTP status code of 429 with a “Retry-after” header outlining when the next request can be made.  ## Account Setup & Printer Registration  The Dashboard Developer API is only available to Formlabs.com account-holding users that are registered and have active Formlabs 3D Printer(s) associated with their accounts. If you do not have a Formlabs.com account, or you have an account but don’t have your Printers connected to it, please follow the instructions below:  1.  Sign up for a Formlabs.com account at [https://formlabs.com/dashboard/#register](https://formlabs.com/dashboard/#register) 2.  Register the Formlabs 3D Printers at [https://formlabs.com/dashboard/#setup](https://formlabs.com/dashboard/#setup). This involves connecting a Formlabs 3D Printer to the Internet and then visiting the Dashboard Registration screen on the Printer to get a registration code. Type this registration code on the Dashboard Printer registration page to complete the registration. 3.  Now the Dashboard should show your Printer’s live status, show a history of prints, etc. 4.  Visit the [Developer Tools page at](https://dashboard.formlabs.com/#developer), and create your **Application credentials** 6.  Once you have your **Client ID** and the **Client Secret**, go to the [Authentication](#tag/Authentication) section for instructions on how to get an API access token and start using the Dashboard Developer API. 
 
-    The version of the OpenAPI document: 0.8.0
+    The version of the OpenAPI document: 0.8.1
     Generated by OpenAPI Generator (https://openapi-generator.tech)
 
     Do not edit the class manually.
@@ -13,20 +13,123 @@
 
 
 import copy
+import http.client as httplib
 import logging
 from logging import FileHandler
 import multiprocessing
 import sys
-from typing import Optional
+from typing import Any, ClassVar, Dict, List, Literal, Optional, TypedDict
+from typing_extensions import NotRequired, Self
+
 import urllib3
 
-import http.client as httplib
 
 JSON_SCHEMA_VALIDATION_KEYWORDS = {
     'multipleOf', 'maximum', 'exclusiveMaximum',
     'minimum', 'exclusiveMinimum', 'maxLength',
     'minLength', 'pattern', 'maxItems', 'minItems'
 }
+
+ServerVariablesT = Dict[str, str]
+
+GenericAuthSetting = TypedDict(
+    "GenericAuthSetting",
+    {
+        "type": str,
+        "in": str,
+        "key": str,
+        "value": str,
+    },
+)
+
+
+OAuth2AuthSetting = TypedDict(
+    "OAuth2AuthSetting",
+    {
+        "type": Literal["oauth2"],
+        "in": Literal["header"],
+        "key": Literal["Authorization"],
+        "value": str,
+    },
+)
+
+
+APIKeyAuthSetting = TypedDict(
+    "APIKeyAuthSetting",
+    {
+        "type": Literal["api_key"],
+        "in": str,
+        "key": str,
+        "value": Optional[str],
+    },
+)
+
+
+BasicAuthSetting = TypedDict(
+    "BasicAuthSetting",
+    {
+        "type": Literal["basic"],
+        "in": Literal["header"],
+        "key": Literal["Authorization"],
+        "value": Optional[str],
+    },
+)
+
+
+BearerFormatAuthSetting = TypedDict(
+    "BearerFormatAuthSetting",
+    {
+        "type": Literal["bearer"],
+        "in": Literal["header"],
+        "format": Literal["JWT"],
+        "key": Literal["Authorization"],
+        "value": str,
+    },
+)
+
+
+BearerAuthSetting = TypedDict(
+    "BearerAuthSetting",
+    {
+        "type": Literal["bearer"],
+        "in": Literal["header"],
+        "key": Literal["Authorization"],
+        "value": str,
+    },
+)
+
+
+HTTPSignatureAuthSetting = TypedDict(
+    "HTTPSignatureAuthSetting",
+    {
+        "type": Literal["http-signature"],
+        "in": Literal["header"],
+        "key": Literal["Authorization"],
+        "value": None,
+    },
+)
+
+
+AuthSettings = TypedDict(
+    "AuthSettings",
+    {
+        "bearerAuth": BearerAuthSetting,
+    },
+    total=False,
+)
+
+
+class HostSettingVariable(TypedDict):
+    description: str
+    default_value: str
+    enum_values: List[str]
+
+
+class HostSetting(TypedDict):
+    url: str
+    description: str
+    variables: NotRequired[Dict[str, HostSettingVariable]]
+
 
 class Configuration:
     """This class contains various settings of the API client.
@@ -62,20 +165,26 @@ class Configuration:
     :Example:
     """
 
-    _default = None
+    _default: ClassVar[Optional[Self]] = None
 
-    def __init__(self, host=None,
-                 api_key=None, api_key_prefix=None,
-                 username=None, password=None,
-                 access_token=None,
-                 server_index=None, server_variables=None,
-                 server_operation_index=None, server_operation_variables=None,
-                 ignore_operation_servers=False,
-                 ssl_ca_cert=None,
-                 retries=None,
-                 *,
-                 debug: Optional[bool] = None
-                 ) -> None:
+    def __init__(
+        self,
+        host: Optional[str]=None,
+        api_key: Optional[Dict[str, str]]=None,
+        api_key_prefix: Optional[Dict[str, str]]=None,
+        username: Optional[str]=None,
+        password: Optional[str]=None,
+        access_token: Optional[str]=None,
+        server_index: Optional[int]=None, 
+        server_variables: Optional[ServerVariablesT]=None,
+        server_operation_index: Optional[Dict[int, int]]=None,
+        server_operation_variables: Optional[Dict[int, ServerVariablesT]]=None,
+        ignore_operation_servers: bool=False,
+        ssl_ca_cert: Optional[str]=None,
+        retries: Optional[int] = None,
+        *,
+        debug: Optional[bool] = None,
+    ) -> None:
         """Constructor
         """
         self._base_path = "https://api.formlabs.com" if host is None else host
@@ -199,7 +308,7 @@ class Configuration:
         """date format
         """
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo:  Dict[int, Any]) -> Self:
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
@@ -213,11 +322,11 @@ class Configuration:
         result.debug = self.debug
         return result
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: Any) -> None:
         object.__setattr__(self, name, value)
 
     @classmethod
-    def set_default(cls, default):
+    def set_default(cls, default: Optional[Self]) -> None:
         """Set default instance of configuration.
 
         It stores default configuration, which can be
@@ -228,7 +337,7 @@ class Configuration:
         cls._default = default
 
     @classmethod
-    def get_default_copy(cls):
+    def get_default_copy(cls) -> Self:
         """Deprecated. Please use `get_default` instead.
 
         Deprecated. Please use `get_default` instead.
@@ -238,7 +347,7 @@ class Configuration:
         return cls.get_default()
 
     @classmethod
-    def get_default(cls):
+    def get_default(cls) -> Self:
         """Return the default configuration.
 
         This method returns newly created, based on default constructor,
@@ -248,11 +357,11 @@ class Configuration:
         :return: The configuration object.
         """
         if cls._default is None:
-            cls._default = Configuration()
+            cls._default = cls()
         return cls._default
 
     @property
-    def logger_file(self):
+    def logger_file(self) -> Optional[str]:
         """The logger file.
 
         If the logger_file is None, then add stream handler and remove file
@@ -264,7 +373,7 @@ class Configuration:
         return self.__logger_file
 
     @logger_file.setter
-    def logger_file(self, value):
+    def logger_file(self, value: Optional[str]) -> None:
         """The logger file.
 
         If the logger_file is None, then add stream handler and remove file
@@ -283,7 +392,7 @@ class Configuration:
                 logger.addHandler(self.logger_file_handler)
 
     @property
-    def debug(self):
+    def debug(self) -> bool:
         """Debug status
 
         :param value: The debug status, True or False.
@@ -292,7 +401,7 @@ class Configuration:
         return self.__debug
 
     @debug.setter
-    def debug(self, value):
+    def debug(self, value: bool) -> None:
         """Debug status
 
         :param value: The debug status, True or False.
@@ -314,7 +423,7 @@ class Configuration:
             httplib.HTTPConnection.debuglevel = 0
 
     @property
-    def logger_format(self):
+    def logger_format(self) -> str:
         """The logger format.
 
         The logger_formatter will be updated when sets logger_format.
@@ -325,7 +434,7 @@ class Configuration:
         return self.__logger_format
 
     @logger_format.setter
-    def logger_format(self, value):
+    def logger_format(self, value: str) -> None:
         """The logger format.
 
         The logger_formatter will be updated when sets logger_format.
@@ -336,7 +445,7 @@ class Configuration:
         self.__logger_format = value
         self.logger_formatter = logging.Formatter(self.__logger_format)
 
-    def get_api_key_with_prefix(self, identifier, alias=None):
+    def get_api_key_with_prefix(self, identifier: str, alias: Optional[str]=None) -> Optional[str]:
         """Gets API key (with prefix if set).
 
         :param identifier: The identifier of apiKey.
@@ -353,7 +462,9 @@ class Configuration:
             else:
                 return key
 
-    def get_basic_auth_token(self):
+        return None
+
+    def get_basic_auth_token(self) -> Optional[str]:
         """Gets HTTP basic authentication header (string).
 
         :return: The token for basic HTTP authentication.
@@ -368,12 +479,12 @@ class Configuration:
             basic_auth=username + ':' + password
         ).get('authorization')
 
-    def auth_settings(self):
+    def auth_settings(self)-> AuthSettings:
         """Gets Auth Settings dict for api client.
 
         :return: The Auth Settings information dict.
         """
-        auth = {}
+        auth: AuthSettings = {}
         if self.access_token is not None:
             auth['bearerAuth'] = {
                 'type': 'bearer',
@@ -383,7 +494,7 @@ class Configuration:
             }
         return auth
 
-    def to_debug_report(self):
+    def to_debug_report(self) -> str:
         """Gets the essential information for debugging.
 
         :return: The report for debugging.
@@ -391,11 +502,11 @@ class Configuration:
         return "Python SDK Debug Report:\n"\
                "OS: {env}\n"\
                "Python Version: {pyversion}\n"\
-               "Version of the API: 0.8.0\n"\
+               "Version of the API: 0.8.1\n"\
                "SDK Package Version: 0.8.0".\
                format(env=sys.platform, pyversion=sys.version)
 
-    def get_host_settings(self):
+    def get_host_settings(self) -> List[HostSetting]:
         """Gets an array of host settings
 
         :return: An array of host settings
@@ -407,7 +518,12 @@ class Configuration:
             }
         ]
 
-    def get_host_from_settings(self, index, variables=None, servers=None):
+    def get_host_from_settings(
+        self,
+        index: Optional[int],
+        variables: Optional[ServerVariablesT]=None,
+        servers: Optional[List[HostSetting]]=None,
+    ) -> str:
         """Gets host URL based on the index and variables
         :param index: array index of the host settings
         :param variables: hash of variable and the corresponding value
@@ -447,12 +563,12 @@ class Configuration:
         return url
 
     @property
-    def host(self):
+    def host(self) -> str:
         """Return generated host."""
         return self.get_host_from_settings(self.server_index, variables=self.server_variables)
 
     @host.setter
-    def host(self, value):
+    def host(self, value: str) -> None:
         """Fix base path."""
         self._base_path = value
         self.server_index = None

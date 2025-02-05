@@ -6,7 +6,6 @@
 README.md
 docs/AuthenticationApi.md
 docs/BasicUser.md
-docs/BlankEnum.md
 docs/BuildPlatformContentsEnum.md
 docs/CameraStatusEnum.md
 docs/Cartridge.md
@@ -26,7 +25,6 @@ docs/HarvestStatusEnum.md
 docs/MyDeepPrinterStatus.md
 docs/MyPrintRunReadOnly.md
 docs/NewWorkgroup.md
-docs/NullEnum.md
 docs/PaginatedCartridgeList.md
 docs/PaginatedPrintRunWithFleetControlDataList.md
 docs/PaginatedTankList.md
@@ -40,7 +38,6 @@ docs/PrintRunSuccessEnum.md
 docs/PrintRunWithFleetControlData.md
 docs/PrintThumbnailSerializerOnlyThumbnail.md
 docs/PrinterCartridgeStatus.md
-docs/PrinterCartridgeStatusCartridgeSlot.md
 docs/PrinterGroup.md
 docs/PrinterGroupsApi.md
 docs/PrinterTankStatus.md
@@ -74,7 +71,6 @@ formlabs_web_api/configuration.py
 formlabs_web_api/exceptions.py
 formlabs_web_api/models/__init__.py
 formlabs_web_api/models/basic_user.py
-formlabs_web_api/models/blank_enum.py
 formlabs_web_api/models/build_platform_contents_enum.py
 formlabs_web_api/models/camera_status_enum.py
 formlabs_web_api/models/cartridge.py
@@ -92,7 +88,6 @@ formlabs_web_api/models/harvest_status_enum.py
 formlabs_web_api/models/my_deep_printer_status.py
 formlabs_web_api/models/my_print_run_read_only.py
 formlabs_web_api/models/new_workgroup.py
-formlabs_web_api/models/null_enum.py
 formlabs_web_api/models/paginated_cartridge_list.py
 formlabs_web_api/models/paginated_print_run_with_fleet_control_data_list.py
 formlabs_web_api/models/paginated_tank_list.py
@@ -106,7 +101,6 @@ formlabs_web_api/models/print_run_success_enum.py
 formlabs_web_api/models/print_run_with_fleet_control_data.py
 formlabs_web_api/models/print_thumbnail_serializer_only_thumbnail.py
 formlabs_web_api/models/printer_cartridge_status.py
-formlabs_web_api/models/printer_cartridge_status_cartridge_slot.py
 formlabs_web_api/models/printer_group.py
 formlabs_web_api/models/printer_tank_status.py
 formlabs_web_api/models/ready_to_print_enum.py
@@ -132,7 +126,6 @@ test-requirements.txt
 test/__init__.py
 test/test_authentication_api.py
 test/test_basic_user.py
-test/test_blank_enum.py
 test/test_build_platform_contents_enum.py
 test/test_camera_status_enum.py
 test/test_cartridge.py
@@ -152,7 +145,6 @@ test/test_harvest_status_enum.py
 test/test_my_deep_printer_status.py
 test/test_my_print_run_read_only.py
 test/test_new_workgroup.py
-test/test_null_enum.py
 test/test_paginated_cartridge_list.py
 test/test_paginated_print_run_with_fleet_control_data_list.py
 test/test_paginated_tank_list.py
@@ -166,7 +158,6 @@ test/test_print_run_success_enum.py
 test/test_print_run_with_fleet_control_data.py
 test/test_print_thumbnail_serializer_only_thumbnail.py
 test/test_printer_cartridge_status.py
-test/test_printer_cartridge_status_cartridge_slot.py
 test/test_printer_group.py
 test/test_printer_groups_api.py
 test/test_printer_tank_status.py

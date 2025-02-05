@@ -43,7 +43,7 @@ class OperationsApi:
 
 
     @validate_call
-    def call_print_1(
+    def call_print(
         self,
         print_request: PrintRequest,
         var_async: Annotated[Optional[StrictBool], Field(description="Whether to run the operation asynchronously")] = None,
@@ -90,7 +90,7 @@ class OperationsApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._call_print_1_serialize(
+        _param = self._call_print_serialize(
             print_request=print_request,
             var_async=var_async,
             _request_auth=_request_auth,
@@ -115,7 +115,7 @@ class OperationsApi:
 
 
     @validate_call
-    def call_print_1_with_http_info(
+    def call_print_with_http_info(
         self,
         print_request: PrintRequest,
         var_async: Annotated[Optional[StrictBool], Field(description="Whether to run the operation asynchronously")] = None,
@@ -162,7 +162,7 @@ class OperationsApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._call_print_1_serialize(
+        _param = self._call_print_serialize(
             print_request=print_request,
             var_async=var_async,
             _request_auth=_request_auth,
@@ -187,7 +187,7 @@ class OperationsApi:
 
 
     @validate_call
-    def call_print_1_without_preload_content(
+    def call_print_without_preload_content(
         self,
         print_request: PrintRequest,
         var_async: Annotated[Optional[StrictBool], Field(description="Whether to run the operation asynchronously")] = None,
@@ -234,7 +234,7 @@ class OperationsApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._call_print_1_serialize(
+        _param = self._call_print_serialize(
             print_request=print_request,
             var_async=var_async,
             _request_auth=_request_auth,
@@ -254,7 +254,7 @@ class OperationsApi:
         return response_data.response
 
 
-    def _call_print_1_serialize(
+    def _call_print_serialize(
         self,
         print_request,
         var_async,

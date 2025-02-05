@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **serial** | **str** |  | [readonly] 
 **material** | **str** |  | [readonly] 
+**consumable_type** | **str** |  | [readonly] 
 **initial_volume_ml** | **float** |  | [readonly] 
 **volume_dispensed_ml** | **float** |  | [readonly] 
 **display_name** | **str** |  | [optional] 

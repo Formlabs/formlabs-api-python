@@ -1,6 +1,6 @@
 # StatusEnum
 
-* `QUEUED` - Queued * `PREPRINT` - Preprint * `PRINTING` - Printing * `PAUSED` - Paused * `FINISHED` - Finished * `ABORTING` - Aborting * `ABORTED` - Aborted * `ERROR` - Error * `WAITING_FOR_RESOLUTION` - Waiting for Resolution * `PREHEAT` - Preheat * `PRECOAT` - Precoat * `POSTCOAT` - Postcoat
+* `QUEUED` - Queued * `PREPRINT` - Preprint * `PRINTING` - Printing * `PAUSED` - Paused * `PAUSING` - Pausing * `FINISHED` - Finished * `ABORTING` - Aborting * `ABORTED` - Aborted * `ERROR` - Error * `WAITING_FOR_RESOLUTION` - Waiting for Resolution * `PREHEAT` - Preheat * `PRECOAT` - Precoat * `POSTCOAT` - Postcoat
 
 ## Enum
 
@@ -11,6 +11,8 @@
 * `PRINTING` (value: `'PRINTING'`)
 
 * `PAUSED` (value: `'PAUSED'`)
+
+* `PAUSING` (value: `'PAUSING'`)
 
 * `FINISHED` (value: `'FINISHED'`)
 

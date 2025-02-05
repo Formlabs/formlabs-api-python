@@ -36,7 +36,6 @@ Name | Type | Description | Notes
 **user_custom_label** | **str** |  | [readonly] 
 **group** | [**PrinterGroup**](PrinterGroup.md) |  | [readonly] 
 **adaptive_thickness** | **bool** |  | [readonly] 
-**probably_finished** | **bool** |  | [readonly] 
 **message** | **str** |  | [readonly] 
 **print_job** | **str** |  | [readonly] 
 **material_name** | **str** |  | [readonly] 
@@ -45,7 +44,7 @@ Name | Type | Description | Notes
 **cloud_queue_item** | **Dict[str, object]** |  | [readonly] 
 **form_auto_serial** | **str** |  | [readonly] 
 **form_auto_fw_version** | **str** |  | [readonly] 
-**harvest_status** | [**HarvestStatusEnum**](HarvestStatusEnum.md) |  | 
+**harvest_status** | [**HarvestStatusEnum**](HarvestStatusEnum.md) |  | [readonly] 
 **parts** | [**List[PrintPart]**](PrintPart.md) |  | [readonly] 
 
 ## Example

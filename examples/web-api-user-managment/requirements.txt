@@ -1,0 +1,8 @@
+annotated-types==0.7.0
+-e file:///Users/janos.molnar/formlabs/formlabs-api-python/web-api/lib
+pydantic==2.10.6
+pydantic-core==2.27.2
+python-dateutil==2.9.0.post0
+six==1.17.0
+typing-extensions==4.12.2
+urllib3==2.3.0
