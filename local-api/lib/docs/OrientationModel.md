@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **x** | **float** | Rotation in degrees around the x axis (applied second) | 
 **y** | **float** | Rotation in degrees around the y axis (applied last) | 
-**z** | **float** | Rotation in degress around the z axis (applied first) | 
+**z** | **float** | Rotation in degrees around the z axis (applied first) | 
 **linear** | **List[List[float]]** |  | 
 **z_direction** | **List[float]** | 3D unit vector in model space saying which piece of the model will point \&quot;up\&quot; in scene space.  | 
 **x_direction** | **List[float]** | 3D unit vector in model space, perpendicular to Z direction, saying which piece of the model will point \&quot;right\&quot; in scene space.  | 

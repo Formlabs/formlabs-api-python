@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **volume_ml** | **float** | The total volume of models and supports in the scene | 
-**unsupported_volume_ml** | **float** | The total volume of models in the scene | 
+**unsupported_volume_ml** | **float** | The total volume of all models in the scene, not including their supports | 
 **total_powder_ml** | **float** |  | 
 **total_powder_kg** | **float** |  | 
 **total_sintered_powder_ml** | **float** |  | 

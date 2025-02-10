@@ -87,7 +87,7 @@ No authorization required
 
 List All Operations
 
-List all in-prgress, completed, and failed operations that have been started since this server was launched. Operations are not currently persisted across server restarts. To get the result of a completed or errored operation, call GET `/operations/{id}/`. 
+List all in-progress, completed, and failed operations that have been started since this server was launched. Operations are not currently persisted across server restarts. To get the result of a completed or errored operation, call GET `/operations/{id}/`. 
 
 ### Example
 

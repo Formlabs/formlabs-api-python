@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **orientation** | [**OrientationModel**](OrientationModel.md) |  | [optional] 
 **scale** | **float** | The scale factor to apply to the model | [optional] 
 **units** | [**UnitsModel**](UnitsModel.md) |  | [optional] 
+**lock** | [**LockModel**](LockModel.md) |  | [optional] [default to LockModel.FREE]
 
 ## Example
 

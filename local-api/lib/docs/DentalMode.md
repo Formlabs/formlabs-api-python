@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **models** | [**ModelsSelectionModel**](ModelsSelectionModel.md) |  | 
-**mode** | **str** |  | 
+**mode** | **str** | DENTAL mode applies algorithms used in PreForm&#39;s Dental Workspace | 
 **tilt** | **int** | Degrees of tilt. Only applies to the DENTAL mode | [optional] 
 
 ## Example

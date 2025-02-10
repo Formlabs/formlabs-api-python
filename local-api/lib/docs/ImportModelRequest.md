@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **orientation** | [**OrientationModel**](OrientationModel.md) |  | [optional] 
 **scale** | **float** | The scale factor to apply to the model | [optional] [default to 1]
 **units** | [**ImportUnitsModel**](ImportUnitsModel.md) |  | [optional] [default to ImportUnitsModel.DETECTED]
+**lock** | [**LockModel**](LockModel.md) |  | [optional] [default to LockModel.FREE]
 
 ## Example
 

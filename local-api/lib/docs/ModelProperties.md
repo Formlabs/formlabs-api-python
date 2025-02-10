@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **in_bounds** | **bool** | Whether the model is within the build volume | [optional] 
 **raw_mesh_hash** | **str** | The hash of the raw mesh data | [optional] 
 **canonical_model_hash** | **str** | The hash of the mesh data and its transform (position, orientation, and scale) | [optional] 
+**lock** | [**LockModel**](LockModel.md) |  | [optional] [default to LockModel.FREE]
 
 ## Example
 

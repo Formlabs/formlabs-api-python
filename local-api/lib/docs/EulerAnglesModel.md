@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **x** | **float** | Rotation in degrees around the x axis (applied second) | 
 **y** | **float** | Rotation in degrees around the y axis (applied last) | 
-**z** | **float** | Rotation in degress around the z axis (applied first) | 
+**z** | **float** | Rotation in degrees around the z axis (applied first) | 
 
 ## Example
 
