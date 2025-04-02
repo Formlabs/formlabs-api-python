@@ -55,7 +55,7 @@ def get_screenshot(settings: dict) -> typing.BinaryIO:
     :param settings: Settings to send to the /scene/save-screenshot endpoint
     :return: A temp file handle to the saved screenshot.
     """
-    temp = tempfile.NamedTemporaryFile("rb", suffix=".png", delete_on_close=False)
+    temp = tempfile.NamedTemporaryFile("rb", suffix=".png")
     screenshot_response = requests.post(
         "http://localhost:44388/scene/save-screenshot/",
         json={"file": temp.name, "image_size_px": 125} | settings,
@@ -91,7 +91,7 @@ args = parser.parse_args()
 directory_path = pathlib.Path(args.folder).resolve(strict=True)
 files_to_batch = list_files_in_directory(directory_path)
 print("Files to batch:")
-print(files_to_batch)
+print(list(map(str, files_to_batch)))
 current_batch = 1
 models_in_current_batch = []
 model_pdf_data = []
@@ -173,7 +173,6 @@ with formlabs.PreFormApi.start_preform_server(pathToPreformServer=pathToPreformS
             if args.traveler_pdf:
                 pdf = pdf_generation.TravelerPDF(
                     directory_path / f"summary-batch-{current_batch}.pdf",
-                    form_file_name,
                 )
 
                 build_volume_image = get_screenshot({})
@@ -189,6 +188,7 @@ with formlabs.PreFormApi.start_preform_server(pathToPreformServer=pathToPreformS
                 ]
 
                 pdf.add_header(
+                    form_file_name,
                     MACHINE_NAME,
                     MATERIAL_NAME,
                     print_setting,
