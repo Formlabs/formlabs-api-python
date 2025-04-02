@@ -1,0 +1,15 @@
+[project]
+name = "examples"
+version = "0.1.0"
+description = "Examples for the Formlabs Local API"
+readme = "../README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "formlabs-local-api-minimal",
+    "pillow>=11.1.0",
+    "reportlab>=4.3.1",
+    "requests>=2.32.3",
+]
+
+[tool.uv.sources]
+formlabs-local-api-minimal = { path = "../local-api/minimal-lib" }
