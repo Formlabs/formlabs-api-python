@@ -4,7 +4,7 @@ All URIs are relative to *http://localhost:44388*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**call_print**](RemoteAccessApi.md#call_print) | **POST** /scene/print/ | Print
+[**call_print**](RemoteAccessApi.md#call_print) | **POST** /scene/{scene_id}/print/ | Print
 [**discover_devices**](RemoteAccessApi.md#discover_devices) | **POST** /discover-devices/ | Discover Devices
 [**get_device**](RemoteAccessApi.md#get_device) | **GET** /devices/{id}/ | Get Device
 [**get_devices**](RemoteAccessApi.md#get_devices) | **GET** /devices/ | Get Devices
@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 
 # **call_print**
-> Print200Response call_print(print_request, var_async=var_async)
+> Print200Response call_print(scene_id, print_request, var_async=var_async)
 
 Print
 
@@ -47,12 +47,13 @@ configuration = formlabs_local_api.Configuration(
 with formlabs_local_api.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = formlabs_local_api.RemoteAccessApi(api_client)
+    scene_id = 'scene_id_example' # str | The unique identifier of the scene
     print_request = {"printer":"10.35.15.12","job_name":"Test Job"} # PrintRequest | 
     var_async = True # bool | Whether to run the operation asynchronously (optional)
 
     try:
         # Print
-        api_response = api_instance.call_print(print_request, var_async=var_async)
+        api_response = api_instance.call_print(scene_id, print_request, var_async=var_async)
         print("The response of RemoteAccessApi->call_print:\n")
         pprint(api_response)
     except Exception as e:
@@ -66,6 +67,7 @@ with formlabs_local_api.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **scene_id** | **str**| The unique identifier of the scene | 
  **print_request** | [**PrintRequest**](PrintRequest.md)|  | 
  **var_async** | **bool**| Whether to run the operation asynchronously | [optional] 
 

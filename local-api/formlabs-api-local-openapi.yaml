@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
   title: Formlabs Local API
-  version: 0.8.14
+  version: 0.9.0
   termsOfService: /formlabs-api-license-agreement.html
   contact:
     name: Formlabs Support
@@ -86,10 +86,15 @@ info:
       it is set up to be printed with.
 
     ## Stateful Interactions
-    The PreForm Server is stateful in that while it is running, it keeps a cache of the
-    current scene and requests will use the cached scene and possibly modify it.
-    For example, initially a scene may be empty and then if a load model request is made
-    then the cached scene will have one model loaded. Calling the load model requests
+    The PreForm Server is stateful in that while it is running, it keeps a cache of scenes.
+    By default, it caches 100 scenes in memory, with unlimited scenes stored on disk, though this
+    may be changed with the `--scene-cache-size` parameter. Scenes are identified by their
+    IDs, returned from the `/scene/` endpoint. `/scene/` endpoints also accept a scene ID of
+    "default", which will use a single global scene. Endpoints with no scene id provided
+    (e.g. `/scene/auto-layout/`) are deprecated. They will use the most recently created scene,
+    and possibly modify it. All other `/scene/` requests will use the user specified scene, and possibly
+    modify it. For example, initially a scene may be empty and then if a load model request
+    is made then the cached scene will have one model loaded. Calling the load model endpoint
     again will load another copy of the model resulting in two models in the cached scene.
 
     ## Blocking Calls & Asynchronous Requests
@@ -161,6 +166,18 @@ tags:
     description: "Long-running operations called with `?async=true`, which return immediately and can be polled for completion."
   - name: API Info
     description: "Get information about the API itself"
+  - name: Modifying a Scene - deprecated
+    description: "Endpoints related to modifying the scene"
+  - name: Getting Scene Information - deprecated
+    description: "Endpoints related to getting information about a scene"
+  - name: Exporting - deprecated
+  - name: Printing - deprecated
+  - name: Remote Access - deprecated
+    description: |
+      Endpoints related to remote access and printing that require Internet access
+      and authentication with Formlabs Web Services."
+  - name: Operations - deprecated
+    description: "Long-running operations called with `?async=true`, which return immediately and can be polled for completion."
 components:
   schemas:
     ErrorModel:
@@ -432,6 +449,9 @@ components:
         layer_count:
           type: integer
           description: The number of layers in the scene
+        id:
+          type: string
+          description: The ID of the created scene
     RepairBehaviorModel:
       type: string
       description: The behavior to use when loading a broken model
@@ -798,6 +818,19 @@ components:
           type: number
           description: "The maximum distance, in mm, from the given position to search for a point on the surface of the model. Must be combined with depth_mm: \"AUTO\"."
       required: ["orientation", "position", "diameter_mm", "depth_mm", "create_plug"]
+    PackingTypeModel:
+      type: object
+      description: Different ways to pack a selection of models
+      properties:
+        packing_type:
+          type: string
+          default: "PACK_VOLUME"
+          description: "The optimization strategy used for packing. Minimize the height or volume of the resulting cage, or skip packing entirely"
+          enum:
+            - PACK_NORMAL
+            - PACK_VOLUME
+            - PACK_HEIGHT
+            - PACK_NONE
 paths:
   /:
     get:
@@ -911,10 +944,10 @@ paths:
   /scene/:
     get:
       summary: Get Scene
-      operationId: getScene
-      description: "Get data about the current scene"
+      operationId: getSceneDeprecated
+      description: Deprecated. See [/scene/{scene_id}/](#operation/getScene)
       tags:
-        - "Getting Scene Information"
+        - Getting Scene Information - deprecated
       responses:
         "200":
           description: Scene description
@@ -922,6 +955,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SceneModel'
+    put:
+      summary: Update Scene
+      operationId: updateSceneDeprecated
+      description: Deprecated. See [/scene/{scene_id}/](#operation/updateScene)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
     post:
       summary: Create Scene
       operationId: createScene
@@ -967,12 +1019,106 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
+
+  /scene/default/:
+    post:
+      summary: Create Default Scene
+      operationId: createDefaultScene
+      description: "Create a default scene"
+      tags:
+        - "Modifying a Scene"
+      requestBody:
+        description: >
+          Create a default scene with a given printing setup.
+
+          For a full list of possible settings, call the GET /list-materials/ endpoint
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SceneTypeModel'
+            examples:
+              Form 4 Black V5:
+                value:
+                  machine_type: "FORM-4-0"
+                  material_code: "FLGPBK05"
+                  print_setting: "DEFAULT"
+                  layer_thickness_mm: 0.025
+              Fuse 1+ Nylon 11:
+                value:
+                  machine_type: "FS30-1-0"
+                  material_code: FLP11B01
+                  print_setting: DEFAULT
+                  layer_thickness_mm: 0.11
+              FPS file:
+                value:
+                  fps_file: "C:\\Users\\user\\Desktop\\test.fps"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /scenes/:
+    get:
+      summary: Get All Scenes
+      operationId: getAllScenes
+      description: "Get data about all scenes"
+      tags:
+        - "Getting Scene Information"
+      responses:
+        "200":
+          description: Descriptions of all scenes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scenes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SceneModel'
+  /scene/{scene_id}/:
+    get:
+      summary: Get Scene
+      operationId: getScene
+      description: "Get data about the scene with the given ID, or the most recently created scene if no ID is provided"
+      tags:
+        - "Getting Scene Information"
+      parameters:
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Scene description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
     put:
       summary: Update Scene
       operationId: updateScene
       description: "Update the scene's properties"
       tags:
         - "Modifying a Scene"
+      parameters:
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1048,7 +1194,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/save-form/:
+  /scene/{scene_id}/save-form/:
     post:
       summary: Save .form file
       operationId: saveFormFile
@@ -1056,6 +1202,12 @@ paths:
       tags:
         - "Exporting"
       parameters:
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
         - name: async
           in: query
           description: Whether to run the operation asynchronously
@@ -1090,7 +1242,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/save-screenshot/:
+  /scene/{scene_id}/save-screenshot/:
     post:
       summary: Save screenshot file
       operationId: saveScreenshot
@@ -1103,6 +1255,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         description: Full path where the image should be saved
         required: true
@@ -1192,13 +1350,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/save-fps-file/:
+  /scene/{scene_id}/save-fps-file/:
     post:
       summary: Save FPS file
       operationId: saveFpsFile
       description: "Save the print settings of the current scene to a .fps file"
       tags:
         - "Exporting"
+      parameters:
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         description: Full path where the FPS file should be saved
         required: true
@@ -1226,7 +1391,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
-  /scene/models/{id}/:
+  /scene/{scene_id}/models/{id}/:
     get:
       summary: Get model
       operationId: getModel
@@ -1238,6 +1403,12 @@ paths:
           in: path
           required: true
           description: The unique identifier of the model
+          schema:
+            type: string
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
           schema:
             type: string
       responses:
@@ -1264,6 +1435,12 @@ paths:
           in: path
           required: true
           description: The unique identifier of the model
+          schema:
+            type: string
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
           schema:
             type: string
       requestBody:
@@ -1330,10 +1507,16 @@ paths:
           description: The unique identifier of the model
           schema:
             type: string
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       responses:
         "200":
           description: OK
-  /scene/models/{id}/duplicate/:
+  /scene/{scene_id}/models/{id}/duplicate/:
     post:
       summary: Duplicate model
       operationId: duplicateModel
@@ -1345,6 +1528,12 @@ paths:
           in: path
           required: true
           description: The unique identifier of the model
+          schema:
+            type: string
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
           schema:
             type: string
       requestBody:
@@ -1370,7 +1559,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
-  /scene/models/{id}/replace/:
+  /scene/{scene_id}/models/{id}/replace/:
     post:
       summary: Replace model
       operationId: replaceModel
@@ -1382,6 +1571,12 @@ paths:
           in: path
           required: true
           description: The unique identifier of the model
+          schema:
+            type: string
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
           schema:
             type: string
       requestBody:
@@ -1416,7 +1611,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
-  /scene/import-model/:
+  /scene/{scene_id}/import-model/:
     post:
       summary: Import model
       operationId: importModel
@@ -1429,6 +1624,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1496,7 +1697,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/scan-to-model/:
+  /scene/{scene_id}/scan-to-model/:
     post:
       summary: Scan to model
       operationId: scanToModel
@@ -1509,6 +1710,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1542,13 +1749,28 @@ paths:
                 wall_thickness_mm:
                   type: number
                   description: The thickness of the honeycomb infill of the model, in mm. Requires hollow=true.
+                drain_hole_radius_mm:
+                  type: number
+                  description: The radius of drain holes in the model, in mm. Requires hollow=true.
+                  default: 1.5
+                drain_hole_height_ratio:
+                  type: number
+                  description: The ratio of the height of the drain hole to the width of the drain hole. Requires hollow=true.
+                  default: 1
       responses:
         "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SceneModel'
+                allOf:
+                  - $ref: '#/components/schemas/SceneModel'
+                  - type: object
+                    properties:
+                      warnings:
+                        $ref: "#/components/schemas/WarningsModel"
+                      infos:
+                        $ref: "#/components/schemas/InfosModel"
         "400":
           description: Bad Request
           content:
@@ -1561,7 +1783,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/print/:
+  /scene/{scene_id}/print/:
     post:
       summary: Print
       operationId: print
@@ -1582,6 +1804,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1635,7 +1863,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/auto-orient/:
+  /scene/{scene_id}/auto-orient/:
     post:
       summary: Auto Orient
       operationId: autoOrient
@@ -1648,6 +1876,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         description: Models to run the auto orient operation on
         required: true
@@ -1705,7 +1939,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/auto-support/:
+  /scene/{scene_id}/auto-support/:
     post:
       summary: Auto Support
       operationId: autoSupport
@@ -1718,6 +1952,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         description: Models to run the auto support operation on
         required: true
@@ -1794,7 +2034,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/auto-layout/:
+  /scene/{scene_id}/auto-layout/:
     post:
       summary: Auto Layout
       operationId: autoLayout
@@ -1807,6 +2047,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         description: Models to run the auto layout operation on
         required: true
@@ -1835,6 +2081,18 @@ paths:
                 build_platform_2_optimized:
                   type: boolean
                   description: Whether to optimize the build platform for two models.
+                custom_bounds:
+                  type: object
+                  description: Bounds to keep selected models inside in the layout operation (default is the maximum that will fit on the build platform)
+                  properties:
+                    x_min_mm:
+                      type: number
+                    x_max_mm:
+                      type: number
+                    y_min_mm:
+                      type: number
+                    y_max_mm:
+                      type: number
             examples:
               All models, all parameters:
                 value:
@@ -1846,6 +2104,14 @@ paths:
               Specific models:
                 value:
                   models: ["0000537c-9ae2-426a-82ee-a007191a8fb5"]
+              Custom bounds:
+                value:
+                  models: "ALL"
+                  custom_bounds:
+                    x_min_mm: -90
+                    x_max_mm: 90
+                    y_min_mm: -60
+                    y_max_mm: 60
       responses:
         "200":
           description: Success
@@ -1868,7 +2134,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/auto-pack/:
+  /scene/{scene_id}/auto-pack/:
     post:
       summary: Auto Pack
       operationId: autoPack
@@ -1881,6 +2147,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         description: Auto pack parameters
         required: true
@@ -1915,7 +2187,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/print-validation/:
+  /scene/pack-and-cage/:
+    post:
+      summary: Pack and Cage
+      operationId: packAndCage
+      description: "Automatically arrange models in the build volume and create a cage around them. Only applies to SLS-type scenes like the Fuse 1+."
+      tags:
+        - "Modifying a Scene"
+      requestBody:
+        description: Auto pack parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                models:
+                  $ref: '#/components/schemas/ModelsSelectionModel'
+                  description: A list of models to pack and cage
+                packing_type:
+                  $ref: '#/components/schemas/PackingTypeModel'
+                cage_label:
+                  type: string
+                  description: The label engraved on the part cage.
+                generate_mesh_label:
+                  type: boolean
+                  description: Whether or not to physically emboss the label of the part cage
+                model_spacing_mm:
+                  type: number
+                  minimum: 0
+                  description: Minimum distance between models in the cage.
+                bar_spacing_mm:
+                  type: number
+                  description: "Space between the bars of the cage"
+                  minimum: 0
+                bar_thickness_mm:
+                  type: number
+                  description: The space between the bars of the cage
+                  minimum: 1
+                bar_width_mm:
+                  type: number
+                  description: Width of the bars of the cage. Defaults to the same as bar_thickness_mm
+                  minimum: 1
+                distance_to_cage_mm:
+                  type: number
+                  description: Extra space between the models and the cage walls
+                  minimum: 0
+                enable_round_edges:
+                  type: boolean
+                  description: Rounds the edges of external cage corners
+                  default: false
+                enable_square_bars:
+                  type: boolean
+                  description: Generate square bars for the cage
+                  default: true
+              required: ["models"]
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
+        "400":
+          description: |
+            ## Bad Request
+
+            The scene will not be modified if any error occurs. The response will contain an error message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /scene/{scene_id}/print-validation/:
     get:
       summary: Get Print Validation
       operationId: getPrintValidation
@@ -1928,6 +2272,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       responses:
         "200":
           description: Success
@@ -1948,7 +2298,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
 
-  /scene/hollow/:
+  /scene/{scene_id}/hollow/:
     post:
       summary: Hollow Model
       operationId: hollowModel
@@ -1961,6 +2311,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -2017,7 +2373,7 @@ paths:
                     items:
                       type: string
                       description: The ID of a model
-  /scene/label/:
+  /scene/{scene_id}/label/:
     post:
       summary: Label Part
       operationId: labelPart
@@ -2030,6 +2386,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -2100,9 +2462,7 @@ paths:
                             description: Model not found
                           - type: string
                             description: Failed to create label for part <error message>
-
-
-  /scene/estimate-print-time/:
+  /scene/{scene_id}/estimate-print-time/:
     post:
       summary: Estimate Print Time
       operationId: estimatePrintTime
@@ -2115,6 +2475,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       responses:
         "200":
           description: Success
@@ -2134,7 +2500,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationAcceptedModel'
-  /scene/add-drain-holes/:
+  /scene/{scene_id}/add-drain-holes/:
     post:
       summary: Add Drain Holes
       operationId: addDrainHoles
@@ -2147,6 +2513,12 @@ paths:
           description: Whether to run the operation asynchronously
           schema:
             type: boolean
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         description: Drain hole parameters
         required: true
@@ -2186,13 +2558,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
-  /scene/interferences/:
+  /scene/{scene_id}/interferences/:
     post:
       summary: Get Scene Interferences
       operationId: getSceneInterferences
       description: "Returns a list of pairs of IDs of interfering models."
       tags:
         - "Getting Scene Information"
+      parameters:
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       requestBody:
         description: Interferences parameters
         required: false
@@ -2564,3 +2943,557 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
+  /scene/save-form/:
+    post:
+      summary: Save .form file
+      operationId: saveFormFileDeprecated
+      description: Deprecated. See [/scene/{scene_id}/save-form/](#operation/saveFormFile)
+      tags:
+        - Exporting - deprecated
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/save-screenshot/:
+    post:
+      summary: Save screenshot file
+      operationId: saveScreenshotDeprecated
+      description: Deprecated. See [/scene/{scene_id}/save-screenshot/](#operation/saveScreenshot)
+      tags:
+        - Exporting - deprecated
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/save-fps-file/:
+    post:
+      summary: Save FPS file
+      operationId: saveFpsFileDeprecated
+      description: Deprecated. See [/scene/{scene_id}/save-fps-file/](#operation/saveFpsFile)
+      tags:
+        - Exporting - deprecated
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /scene/models/{id}/:
+    get:
+      summary: Get model
+      operationId: getModelDeprecated
+      description: Deprecated. See [/scene/{scene_id}/models/{id}/](#operation/getModel)
+      tags:
+        - Getting Scene Information - deprecated
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the model
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Model description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelProperties'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    post:
+      summary: Update model
+      operationId: updateModelDeprecated
+      description: Deprecated. See [/scene/{scene_id}/models/{id}/](#operation/updateModel)
+      tags:
+        - Modifying a Scene - deprecated
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the model
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    delete:
+      summary: Delete model
+      operationId: deleteModelDeprecated
+      description: Deprecated. See [/scene/{scene_id}/models/{id}/](#operation/deleteModel)
+      tags:
+        - Modifying a Scene - deprecated
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the model
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /scene/models/{id}/duplicate/:
+    post:
+      summary: Duplicate model
+      operationId: duplicateModelDeprecated
+      description: Deprecated. See [/scene/{scene_id}/models/{id}/duplicate/](#operation/duplicateModel)
+      tags:
+        - Modifying a Scene - deprecated
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the model
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /scene/models/{id}/replace/:
+    post:
+      summary: Replace model
+      operationId: replaceModelDeprecated
+      description: Deprecated. See [/scene/{scene_id}/models/{id}/replace/](#operation/replaceModel)
+      tags:
+        - Modifying a Scene - deprecated
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the model
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  warnings:
+                    type: array
+                    items:
+                      type: string
+                  model_properties:
+                    $ref: '#/components/schemas/ModelProperties'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /scene/import-model/:
+    post:
+      summary: Import model
+      operationId: importModelDeprecated
+      description: Deprecated. See [/scene/{scene_id}/import-model/](#operation/importModel)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelProperties'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/scan-to-model/:
+    post:
+      summary: Scan to model
+      operationId: scanToModelDeprecated
+      description: Deprecated. See [/scene/{scene_id}/scan-to-model/](#operation/scanToModel)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SceneModel'
+                  - type: object
+                    properties:
+                      warnings:
+                        $ref: "#/components/schemas/WarningsModel"
+                      infos:
+                        $ref: "#/components/schemas/InfosModel"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/print/:
+    post:
+      summary: Print
+      operationId: printDeprecated
+      description: Deprecated. See [/scene/{scene_id}/print/](#operation/print)
+      tags:
+        - Printing - deprecated
+        - Remote Access - deprecated
+        - 'Operations - deprecated:'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    description: ID of the uploaded job
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/auto-orient/:
+    post:
+      summary: Auto Orient
+      operationId: autoOrientDeprecated
+      description: Deprecated. See [/scene/{scene_id}/auto-orient/](#operation/autoOrient)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/auto-support/:
+    post:
+      summary: Auto Support
+      operationId: autoSupportDeprecated
+      description: Deprecated. See [/scene/{scene_id}/auto-support/](#operation/autoSupport)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/auto-layout/:
+    post:
+      summary: Auto Layout
+      operationId: autoLayoutDeprecated
+      description: Deprecated. See [/scene/{scene_id}/auto-layout/](#operation/autoLayout)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
+        "400":
+          description: |
+            ## Bad Request
+
+            The scene will not be modified if any error occurs. The response will contain an error message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/auto-pack/:
+    post:
+      summary: Auto Pack
+      operationId: autoPackDeprecated
+      description: Deprecated. See [/scene/{scene_id}/auto-pack/](#operation/autoPack)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
+        "400":
+          description: |
+            ## Bad Request
+
+            The scene will not be modified if any error occurs. The response will contain an error message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/print-validation/:
+    get:
+      summary: Get Print Validation
+      operationId: getPrintValidationDeprecated
+      description: Deprecated. See [/scene/{scene_id}/print-validation/](#operation/getPrintValidation)
+      tags:
+        - Getting Scene Information - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrintValidationResultModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/hollow/:
+    post:
+      summary: Hollow Model
+      operationId: hollowModelDeprecated
+      description: Deprecated. See [/scene/{scene_id}/hollow/](#operation/hollowModel)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  warnings:
+                    $ref: "#/components/schemas/WarningsModel"
+                  infos:
+                    $ref: "#/components/schemas/InfosModel"
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  failures:
+                    type: array
+                    description: The IDs of models the hollowing operation failed for
+                    items:
+                      type: string
+                      description: The ID of a model
+  /scene/label/:
+    post:
+      summary: Label Part
+      operationId: labelPartDeprecated
+      description: Deprecated. See [/scene/{scene_id}/label/](#operation/labelPart)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  warnings:
+                    $ref: "#/components/schemas/WarningsModel"
+                  infos:
+                    $ref: "#/components/schemas/InfosModel"
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        oneOf:
+                          - type: string
+                            description: Model not found
+                          - type: string
+                            description: Failed to create label for part <error message>
+  /scene/estimate-print-time/:
+    post:
+      summary: Estimate Print Time
+      operationId: estimatePrintTimeDeprecated
+      description: Deprecated. See [/scene/{scene_id}/estimate-print-time/](#operation/estimatePrintTime)
+      tags:
+        - Getting Scene Information - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstimatedPrintTimeModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+  /scene/add-drain-holes/:
+    post:
+      summary: Add Drain Holes
+      operationId: addDrainHolesDeprecated
+      description: Deprecated. See [/scene/{scene_id}/add-drain-holes/](#operation/addDrainHoles)
+      tags:
+        - Modifying a Scene - deprecated
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plugs:
+                    $ref: '#/components/schemas/ModelsSelectionModel'
+                  warnings:
+                    $ref: "#/components/schemas/WarningsModel"
+                  infos:
+                    $ref: "#/components/schemas/InfosModel"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /scene/interferences/:
+    post:
+      summary: Get Scene Interferences
+      operationId: getSceneInterferencesDeprecated
+      description: Deprecated. See [/scene/{scene_id}/interferences/](#operation/getSceneInterferences)
+      tags:
+        - Getting Scene Information - deprecated
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+

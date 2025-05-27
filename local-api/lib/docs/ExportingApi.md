@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:44388*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**save_form_file**](ExportingApi.md#save_form_file) | **POST** /scene/save-form/ | Save .form file
-[**save_fps_file**](ExportingApi.md#save_fps_file) | **POST** /scene/save-fps-file/ | Save FPS file
-[**save_screenshot**](ExportingApi.md#save_screenshot) | **POST** /scene/save-screenshot/ | Save screenshot file
+[**save_form_file**](ExportingApi.md#save_form_file) | **POST** /scene/{scene_id}/save-form/ | Save .form file
+[**save_fps_file**](ExportingApi.md#save_fps_file) | **POST** /scene/{scene_id}/save-fps-file/ | Save FPS file
+[**save_screenshot**](ExportingApi.md#save_screenshot) | **POST** /scene/{scene_id}/save-screenshot/ | Save screenshot file
 
 
 # **save_form_file**
-> save_form_file(load_form_file_request, var_async=var_async)
+> save_form_file(scene_id, load_form_file_request, var_async=var_async)
 
 Save .form file
 
@@ -36,12 +36,13 @@ configuration = formlabs_local_api.Configuration(
 with formlabs_local_api.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = formlabs_local_api.ExportingApi(api_client)
+    scene_id = 'scene_id_example' # str | The unique identifier of the scene
     load_form_file_request = {"file":"C:\\Users\\user\\Desktop\\test.form"} # LoadFormFileRequest | Full path where the file should be saved
     var_async = True # bool | Whether to run the operation asynchronously (optional)
 
     try:
         # Save .form file
-        api_instance.save_form_file(load_form_file_request, var_async=var_async)
+        api_instance.save_form_file(scene_id, load_form_file_request, var_async=var_async)
     except Exception as e:
         print("Exception when calling ExportingApi->save_form_file: %s\n" % e)
 ```
@@ -53,6 +54,7 @@ with formlabs_local_api.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **scene_id** | **str**| The unique identifier of the scene | 
  **load_form_file_request** | [**LoadFormFileRequest**](LoadFormFileRequest.md)| Full path where the file should be saved | 
  **var_async** | **bool**| Whether to run the operation asynchronously | [optional] 
 
@@ -80,7 +82,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **save_fps_file**
-> save_fps_file(save_fps_file_request)
+> save_fps_file(scene_id, save_fps_file_request)
 
 Save FPS file
 
@@ -106,11 +108,12 @@ configuration = formlabs_local_api.Configuration(
 with formlabs_local_api.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = formlabs_local_api.ExportingApi(api_client)
+    scene_id = 'scene_id_example' # str | The unique identifier of the scene
     save_fps_file_request = {"file":"C:\\Users\\user\\Desktop\\custom-grey.fps"} # SaveFpsFileRequest | Full path where the FPS file should be saved
 
     try:
         # Save FPS file
-        api_instance.save_fps_file(save_fps_file_request)
+        api_instance.save_fps_file(scene_id, save_fps_file_request)
     except Exception as e:
         print("Exception when calling ExportingApi->save_fps_file: %s\n" % e)
 ```
@@ -122,6 +125,7 @@ with formlabs_local_api.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **scene_id** | **str**| The unique identifier of the scene | 
  **save_fps_file_request** | [**SaveFpsFileRequest**](SaveFpsFileRequest.md)| Full path where the FPS file should be saved | 
 
 ### Return type
@@ -147,7 +151,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **save_screenshot**
-> save_screenshot(save_screenshot_request, var_async=var_async)
+> save_screenshot(scene_id, save_screenshot_request, var_async=var_async)
 
 Save screenshot file
 
@@ -173,12 +177,13 @@ configuration = formlabs_local_api.Configuration(
 with formlabs_local_api.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = formlabs_local_api.ExportingApi(api_client)
+    scene_id = 'scene_id_example' # str | The unique identifier of the scene
     save_screenshot_request = {"file":"C:\\Users\\user\\Desktop\\screenshot.png"} # SaveScreenshotRequest | Full path where the image should be saved
     var_async = True # bool | Whether to run the operation asynchronously (optional)
 
     try:
         # Save screenshot file
-        api_instance.save_screenshot(save_screenshot_request, var_async=var_async)
+        api_instance.save_screenshot(scene_id, save_screenshot_request, var_async=var_async)
     except Exception as e:
         print("Exception when calling ExportingApi->save_screenshot: %s\n" % e)
 ```
@@ -190,6 +195,7 @@ with formlabs_local_api.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **scene_id** | **str**| The unique identifier of the scene | 
  **save_screenshot_request** | [**SaveScreenshotRequest**](SaveScreenshotRequest.md)| Full path where the image should be saved | 
  **var_async** | **bool**| Whether to run the operation asynchronously | [optional] 
 

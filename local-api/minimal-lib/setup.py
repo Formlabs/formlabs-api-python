@@ -7,7 +7,7 @@ from setuptools import setup, find_packages  # noqa: H301
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 NAME = "formlabs_local_api_minimal"
-VERSION = "0.8.7"
+VERSION = "0.9.0"
 PYTHON_REQUIRES = ">=3.7"
 REQUIRES = [
     "requests >= 2.32.3",

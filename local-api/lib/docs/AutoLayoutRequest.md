@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **allow_overlapping_supports** | **bool** | Whether to allow rafts to overlap. | [optional] 
 **lock_rotation** | **bool** | Whether to keep model rotation about Z fixed during layout. | [optional] 
 **build_platform_2_optimized** | **bool** | Whether to optimize the build platform for two models. | [optional] 
+**custom_bounds** | [**AutoLayoutRequestCustomBounds**](AutoLayoutRequestCustomBounds.md) |  | [optional] 
 
 ## Example
 

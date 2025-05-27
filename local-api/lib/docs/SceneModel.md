@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **scene_settings** | [**SceneTypeModel**](SceneTypeModel.md) |  | [optional] 
 **material_usage** | [**MaterialUsageModel**](MaterialUsageModel.md) |  | [optional] 
 **layer_count** | **int** | The number of layers in the scene | [optional] 
+**id** | **str** | The ID of the created scene | [optional] 
 
 ## Example
 

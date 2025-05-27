@@ -2,7 +2,7 @@ templateDir: local-api/generator_custom_templates
 additionalProperties:
   projectName: formlabs_local_api
   packageName: formlabs_local_api
-  packageVersion: 0.8.7
+  packageVersion: 0.9.0
 files:
   PreFormApi.py:
     folder: formlabs_local_api

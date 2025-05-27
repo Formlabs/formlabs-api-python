@@ -13,6 +13,8 @@ Name | Type | Description | Notes
 **cutoff_below_gumline_mm** | **float** | Remove all scan data below this height (in mm) from the model, relative to the gumline, replace with extrude from the bottom of the model. | [optional] 
 **shell_thickness_mm** | **float** | The thickness of the outer shell of the model, in mm. Requires hollow&#x3D;true. | [optional] 
 **wall_thickness_mm** | **float** | The thickness of the honeycomb infill of the model, in mm. Requires hollow&#x3D;true. | [optional] 
+**drain_hole_radius_mm** | **float** | The radius of drain holes in the model, in mm. Requires hollow&#x3D;true. | [optional] [default to 1.5]
+**drain_hole_height_ratio** | **float** | The ratio of the height of the drain hole to the width of the drain hole. Requires hollow&#x3D;true. | [optional] [default to 1]
 
 ## Example
 
