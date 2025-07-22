@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **file** | **str** | Full path to the file to load | 
+**files** | **List[str]** | Array of paths to the files to load | [optional] 
 **units** | [**ImportUnitsModel**](ImportUnitsModel.md) |  | [optional] [default to ImportUnitsModel.DETECTED]
 **cutoff_height_mm** | **float** | Remove all scan data below this height (in mm) from the model, replace with extrude from the bottom of the model. | 
 **extrude_distance_mm** | **float** | Extrude this distance (in mm) from the removed bottom of the model. Default is 0mm. | [optional] 

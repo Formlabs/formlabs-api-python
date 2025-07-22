@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
   title: Formlabs Local API
-  version: 0.9.1
+  version: 0.9.2
   termsOfService: /formlabs-api-license-agreement.html
   contact:
     name: Formlabs Support
@@ -1729,6 +1729,12 @@ paths:
                 file:
                   type: string
                   description: Full path to the file to load
+                files:
+                  type: array
+                  description: Array of paths to the files to load
+                  items:
+                    type: string
+                    description: Full path to the file to load
                 units:
                   $ref: '#/components/schemas/ImportUnitsModel'
                 cutoff_height_mm:
