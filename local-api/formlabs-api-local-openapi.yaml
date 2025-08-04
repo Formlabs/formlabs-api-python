@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
   title: Formlabs Local API
-  version: 0.9.3
+  version: 0.9.4
   termsOfService: /formlabs-api-license-agreement.html
   contact:
     name: Formlabs Support
