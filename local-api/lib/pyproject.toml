@@ -1,6 +1,6 @@
 [project]
 name = "formlabs_local_api"
-version = "0.9.3"
+version = "0.9.4"
 description = "Formlabs Local API"
 authors = [
   {name = "Formlabs Support",email = "team@openapitools.org"},
