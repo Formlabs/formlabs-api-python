@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**models** | [**ModelsSelectionModel**](ModelsSelectionModel.md) |  | [optional] 
+**models** | [**ModelsSelectionModel**](ModelsSelectionModel.md) | A list of models to hollow | [optional] 
 **wall_thickness_mm** | **float** | The desired wall thickness of the hollowed models | [optional] 
 **feature_size_mm** | **float** | The size of features to keep on hollowed geometry. Higher values will produce a smoother, simpler inner hollowed surface with a less accurate thickness wall thickness around features smaller than this value. | [optional] [default to 1]
 **accuracy** | **float** | The accuracy of the hollowing operation. Higher values are slower but more accurate. | [optional] [default to 0.5]

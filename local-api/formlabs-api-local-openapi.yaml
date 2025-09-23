@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
   title: Formlabs Local API
-  version: 0.9.6
+  version: 0.9.7
   termsOfService: /formlabs-api-license-agreement.html
   contact:
     name: Formlabs Support
@@ -1066,6 +1066,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
+    delete:
+      summary: Delete Default Scene
+      operationId: deleteDefaultScene
+      description: "Delete the default scene. Replaces the default scene with a blank scene."
+      tags:
+        - "Modifying a Scene"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
   /scenes/:
     get:
       summary: Get All Scenes
@@ -1141,6 +1160,32 @@ paths:
               FPS file:
                 value:
                   fps_file: "C:\\Users\\user\\Desktop\\test.fps"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SceneModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    delete:
+      summary: Delete Scene
+      operationId: deleteScene
+      description: "Delete a scene"
+      tags:
+        - "Modifying a Scene"
+      parameters:
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
       responses:
         "200":
           description: Success
@@ -1763,6 +1808,10 @@ paths:
                   type: number
                   description: The ratio of the height of the drain hole to the width of the drain hole. Requires hollow=true.
                   default: 1
+                enable_smooth_contour_extended_sides:
+                  type: boolean
+                  description: Whether to enable smoothing contours that are extended from the bottom of the model to form base sides.
+                  default: true
       responses:
         "200":
           description: Success
@@ -2209,8 +2258,9 @@ paths:
               type: object
               properties:
                 models:
-                  $ref: '#/components/schemas/ModelsSelectionModel'
-                  description: A list of models to pack and cage
+                  allOf:
+                    - $ref: '#/components/schemas/ModelsSelectionModel'
+                    - description: A list of models to pack and cage
                 packing_type:
                   $ref: '#/components/schemas/PackingTypeModel'
                 cage_label:
@@ -2331,8 +2381,9 @@ paths:
               type: object
               properties:
                 models:
-                  $ref: '#/components/schemas/ModelsSelectionModel'
-                  description: A list of models to hollow
+                  allOf:
+                  - $ref: '#/components/schemas/ModelsSelectionModel'
+                  - description: A list of models to hollow
                 wall_thickness_mm:
                   type: number
                   minimum: 0.1
@@ -2409,11 +2460,13 @@ paths:
                   type: string
                   description: The ID of the model to label
                 orientation:
-                  $ref: '#/components/schemas/OrientationModel'
-                  description: The orientation of the label (+x left-to-right along text, +y top-to-bottom along text, +z normal to text plane).
+                  allOf:
+                  - description: The orientation of the label (+x left-to-right along text, +y top-to-bottom along text, +z normal to text plane).
+                  - $ref: '#/components/schemas/OrientationModel'
                 position:
-                  $ref: '#/components/schemas/ScenePositionModel'
-                  description: The desired center point of the label
+                  allOf:
+                  - $ref: '#/components/schemas/ScenePositionModel'
+                  - description: The desired center point of the label
                 label:
                   type: string
                   description: The label's text
