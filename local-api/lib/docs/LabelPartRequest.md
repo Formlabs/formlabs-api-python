@@ -6,8 +6,8 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **model_id** | **str** | The ID of the model to label | 
-**orientation** | [**OrientationModel**](OrientationModel.md) |  | 
-**position** | [**ScenePositionModel**](ScenePositionModel.md) |  | 
+**orientation** | [**OrientationModel**](OrientationModel.md) | The orientation of the label (+x left-to-right along text, +y top-to-bottom along text, +z normal to text plane). | 
+**position** | [**ScenePositionModel**](ScenePositionModel.md) | The desired center point of the label | 
 **label** | **str** | The label&#39;s text | 
 **application_mode** | **str** |  | [optional] [default to 'EMBOSS']
 **font_size_mm** | **float** | The font size of the label | 

@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**models** | [**ModelsSelectionModel**](ModelsSelectionModel.md) |  | 
+**models** | [**ModelsSelectionModel**](ModelsSelectionModel.md) | A list of models to pack and cage | 
 **packing_type** | [**PackingTypeModel**](PackingTypeModel.md) |  | [optional] 
 **cage_label** | **str** | The label engraved on the part cage. | [optional] 
 **generate_mesh_label** | **bool** | Whether or not to physically emboss the label of the part cage | [optional] 

@@ -11,7 +11,9 @@ Method | HTTP request | Description
 [**auto_support**](ModifyingASceneApi.md#auto_support) | **POST** /scene/{scene_id}/auto-support/ | Auto Support
 [**create_default_scene**](ModifyingASceneApi.md#create_default_scene) | **POST** /scene/default/ | Create Default Scene
 [**create_scene**](ModifyingASceneApi.md#create_scene) | **POST** /scene/ | Create Scene
+[**delete_default_scene**](ModifyingASceneApi.md#delete_default_scene) | **DELETE** /scene/default/ | Delete Default Scene
 [**delete_model**](ModifyingASceneApi.md#delete_model) | **DELETE** /scene/{scene_id}/models/{id}/ | Delete model
+[**delete_scene**](ModifyingASceneApi.md#delete_scene) | **DELETE** /scene/{scene_id}/ | Delete Scene
 [**duplicate_model**](ModifyingASceneApi.md#duplicate_model) | **POST** /scene/{scene_id}/models/{id}/duplicate/ | Duplicate model
 [**hollow_model**](ModifyingASceneApi.md#hollow_model) | **POST** /scene/{scene_id}/hollow/ | Hollow Model
 [**import_model**](ModifyingASceneApi.md#import_model) | **POST** /scene/{scene_id}/import-model/ | Import model
@@ -532,6 +534,71 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **delete_default_scene**
+> SceneModel delete_default_scene()
+
+Delete Default Scene
+
+Delete the default scene. Replaces the default scene with a blank scene.
+
+### Example
+
+
+```python
+import formlabs_local_api
+from formlabs_local_api.models.scene_model import SceneModel
+from formlabs_local_api.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost:44388
+# See configuration.py for a list of all supported configuration parameters.
+configuration = formlabs_local_api.Configuration(
+    host = "http://localhost:44388"
+)
+
+
+# Enter a context with an instance of the API client
+with formlabs_local_api.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = formlabs_local_api.ModifyingASceneApi(api_client)
+
+    try:
+        # Delete Default Scene
+        api_response = api_instance.delete_default_scene()
+        print("The response of ModifyingASceneApi->delete_default_scene:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ModifyingASceneApi->delete_default_scene: %s\n" % e)
+```
+
+
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**SceneModel**](SceneModel.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Bad Request |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **delete_model**
 > delete_model(id, scene_id)
 
@@ -596,6 +663,75 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **delete_scene**
+> SceneModel delete_scene(scene_id)
+
+Delete Scene
+
+Delete a scene
+
+### Example
+
+
+```python
+import formlabs_local_api
+from formlabs_local_api.models.scene_model import SceneModel
+from formlabs_local_api.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost:44388
+# See configuration.py for a list of all supported configuration parameters.
+configuration = formlabs_local_api.Configuration(
+    host = "http://localhost:44388"
+)
+
+
+# Enter a context with an instance of the API client
+with formlabs_local_api.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = formlabs_local_api.ModifyingASceneApi(api_client)
+    scene_id = 'scene_id_example' # str | The unique identifier of the scene
+
+    try:
+        # Delete Scene
+        api_response = api_instance.delete_scene(scene_id)
+        print("The response of ModifyingASceneApi->delete_scene:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ModifyingASceneApi->delete_scene: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **scene_id** | **str**| The unique identifier of the scene | 
+
+### Return type
+
+[**SceneModel**](SceneModel.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Bad Request |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

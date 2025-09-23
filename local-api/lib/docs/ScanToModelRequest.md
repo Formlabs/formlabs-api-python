@@ -16,6 +16,7 @@ Name | Type | Description | Notes
 **wall_thickness_mm** | **float** | The thickness of the honeycomb infill of the model, in mm. Requires hollow&#x3D;true. | [optional] 
 **drain_hole_radius_mm** | **float** | The radius of drain holes in the model, in mm. Requires hollow&#x3D;true. | [optional] [default to 1.5]
 **drain_hole_height_ratio** | **float** | The ratio of the height of the drain hole to the width of the drain hole. Requires hollow&#x3D;true. | [optional] [default to 1]
+**enable_smooth_contour_extended_sides** | **bool** | Whether to enable smoothing contours that are extended from the bottom of the model to form base sides. | [optional] [default to True]
 
 ## Example
 
