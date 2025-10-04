@@ -5,7 +5,8 @@ description = "Formlabs Local API"
 authors = [
   {name = "Formlabs Support",email = "team@openapitools.org"},
 ]
-license = "NoLicense"
+license = { file = "../../LICENSE.md" }
+classifiers = ["License :: Other/Proprietary License"]
 readme = "README.md"
 keywords = ["OpenAPI", "OpenAPI-Generator", "Formlabs Local API"]
 requires-python = ">=3.9"
