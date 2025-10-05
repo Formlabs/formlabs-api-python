@@ -3,7 +3,7 @@ name = "formlabs_web_api"
 version = "0.8.1"
 description = "Formlabs Web API"
 authors = ["Formlabs Support <team@openapitools.org>"]
-license = { file = "../../LICENSE.md" }
+license = { text = "Proprietary }
 classifiers = ["License :: Other/Proprietary License"]
 readme = "README.md"
 repository = "https://github.com/GIT_USER_ID/GIT_REPO_ID"
