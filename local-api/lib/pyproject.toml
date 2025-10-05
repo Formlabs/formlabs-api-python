@@ -5,7 +5,7 @@ description = "Formlabs Local API"
 authors = [
   {name = "Formlabs Support",email = "team@openapitools.org"},
 ]
-license = { text = "Proprietary }
+license = { text = "Proprietary" }
 classifiers = ["License :: Other/Proprietary License"]
 readme = "README.md"
 keywords = ["OpenAPI", "OpenAPI-Generator", "Formlabs Local API"]
