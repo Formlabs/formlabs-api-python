@@ -10,12 +10,15 @@ Name | Type | Description | Notes
 **units** | [**ImportUnitsModel**](ImportUnitsModel.md) |  | [optional] [default to ImportUnitsModel.DETECTED]
 **cutoff_height_mm** | **float** | Remove all scan data below this height (in mm) from the model, replace with extrude from the bottom of the model. | 
 **extrude_distance_mm** | **float** | Extrude this distance (in mm) from the removed bottom of the model. Default is 0mm. | [optional] 
-**hollow** | **bool** | Whether to hollow the model and fill in with a honeycomb infill. | [optional] 
+**hollow** | **bool** | Whether to hollow the model. | [optional] 
+**enable_honeycomb_infill** | **bool** | Whether to enable honeycomb infill when hollowing the model. | [optional] [default to True]
 **cutoff_below_gumline_mm** | **float** | Remove all scan data below this height (in mm) from the model, relative to the gumline, replace with extrude from the bottom of the model. | [optional] 
 **shell_thickness_mm** | **float** | The thickness of the outer shell of the model, in mm. Requires hollow&#x3D;true. | [optional] 
 **wall_thickness_mm** | **float** | The thickness of the honeycomb infill of the model, in mm. Requires hollow&#x3D;true. | [optional] 
 **drain_hole_radius_mm** | **float** | The radius of drain holes in the model, in mm. Requires hollow&#x3D;true. | [optional] [default to 1.5]
 **drain_hole_height_ratio** | **float** | The ratio of the height of the drain hole to the width of the drain hole. Requires hollow&#x3D;true. | [optional] [default to 1]
+**drain_hole_suppression_distance_mm** | **float** | When generating draining holes, don&#39;t attempt to place them within this distance of each other. In other words, this controls the minimum distance between drain holes. Requires hollow&#x3D;true. | [optional] [default to 2]
+**drain_hole_max_count** | **float** | For each curve on the bottom of the model, place at most this many drain holes. Requires hollow&#x3D;true. | [optional] [default to 2]
 **enable_smooth_contour_extended_sides** | **bool** | Whether to enable smoothing contours that are extended from the bottom of the model to form base sides. | [optional] [default to True]
 
 ## Example
