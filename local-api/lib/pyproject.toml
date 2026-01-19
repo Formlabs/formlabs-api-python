@@ -1,11 +1,11 @@
 [project]
 name = "formlabs_local_api"
-version = "0.9.9"
+version = "0.9.11"
 description = "Formlabs Local API"
 authors = [
   {name = "Formlabs Support",email = "team@openapitools.org"},
 ]
-license = { text = "Proprietary" }
+license = "NoLicense"
 readme = "README.md"
 keywords = ["OpenAPI", "OpenAPI-Generator", "Formlabs Local API"]
 requires-python = ">=3.9"
