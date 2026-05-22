@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
   title: Formlabs Local API
-  version: "0.9.13"
+  version: "0.9.22"
   termsOfService: /formlabs-api-license-agreement.html
   contact:
     name: Formlabs Support
@@ -515,6 +515,81 @@ components:
               has_seamline:
                 type: boolean
                 description: Whether the model has a seamline
+    ThinWallDetectionRequestModel:
+      type: object
+      required:
+        - threshold_mm
+      properties:
+        models:
+          description: Which models to analyse. "ALL" or an array of model IDs.
+          oneOf:
+            - type: string
+              enum: ["ALL"]
+            - type: array
+              items:
+                type: string
+          default: "ALL"
+        threshold_mm:
+          type: number
+          exclusiveMinimum: 0
+          description: >
+            Wall thickness threshold in millimeters. Regions thinner than this
+            are flagged. Effective detection resolution is internally clamped
+            at a floor of 0.05 mm; thresholds requesting a finer voxel grid
+            (`threshold_mm < ~0.2`) coarsen rather than blow up memory, so
+            features thinner than 0.05 mm cannot be detected regardless of
+            threshold.
+    ThinWallDetectionResultModel:
+      type: object
+      properties:
+        per_model_results:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              has_thin_walls:
+                type: boolean
+                description: Whether the model has any thin-wall regions below the threshold.
+              thin_volume_mm3:
+                type: number
+                description: Total volume of thin-wall regions in cubic millimeters. Equals the sum of `thin_regions[].volume_mm3`.
+              thin_region_count:
+                type: integer
+                description: Number of distinct connected thin-wall regions. Equals `thin_regions.length`.
+              thin_regions:
+                type: array
+                description: >
+                  Per-region breakdown, sorted by volume descending. A single
+                  aggregate `thin_volume_mm3` / `thin_region_count` hides whether
+                  `N` regions are `N` real features or `N` tiny artifacts; this
+                  array exposes the per-region volumes and bounding boxes so the
+                  client can inspect the distribution. Empty when `has_thin_walls`
+                  is false.
+                items:
+                  type: object
+                  properties:
+                    volume_mm3:
+                      type: number
+                      description: Volume of this connected region in mm³.
+                    bounding_box:
+                      type: object
+                      description: >
+                        Axis-aligned bounding box of the region in the model's
+                        physical-mm coordinates (mesh coordinates pre-multiplied
+                        by the model's mm-scale).
+                      properties:
+                        min_corner:
+                          type: object
+                          properties:
+                            x: { type: number }
+                            y: { type: number }
+                            z: { type: number }
+                        max_corner:
+                          type: object
+                          properties:
+                            x: { type: number }
+                            y: { type: number }
+                            z: { type: number }
     EstimatedPrintTimeModel:
       oneOf:
         - type: object
@@ -2664,6 +2739,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
+  /scene/{scene_id}/thin-wall-detection/:
+    post:
+      summary: Detect Thin Walls
+      operationId: detectThinWalls
+      description: "Detect thin-wall regions in models. Returns per-model thin-wall analysis based on a configurable wall-thickness threshold."
+      tags:
+        - "Getting Scene Information"
+      parameters:
+        - name: scene_id
+          in: path
+          required: true
+          description: The unique identifier of the scene
+          schema:
+            type: string
+        - name: async
+          in: query
+          required: false
+          description: >
+            If `true`, the server returns `202 Accepted` with an operation id
+            and runs the detection in the background. Poll `/operations/{id}/`
+            for completion. Recommended for large meshes or `models: "ALL"`
+            requests where the synchronous response may be slow.
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        description: Thin wall detection parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThinWallDetectionRequestModel'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThinWallDetectionResultModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
   /devices/:
     get:
       summary: Get Devices
@@ -3561,6 +3687,46 @@ paths:
       responses:
         "200":
           description: Success
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /scene/thin-wall-detection/:
+    post:
+      summary: Detect Thin Walls
+      operationId: detectThinWallsDeprecated
+      description: Deprecated. See [/scene/{scene_id}/thin-wall-detection/](#operation/detectThinWalls)
+      tags:
+        - Getting Scene Information - deprecated
+      parameters:
+        - name: async
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        description: Thin wall detection parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThinWallDetectionRequestModel'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThinWallDetectionResultModel'
+        "202":
+          description: Async operation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationAcceptedModel'
         "400":
           description: Bad Request
           content:

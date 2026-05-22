@@ -4,12 +4,86 @@ All URIs are relative to *http://localhost:44388*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**detect_thin_walls_deprecated**](GettingSceneInformationDeprecatedApi.md#detect_thin_walls_deprecated) | **POST** /scene/thin-wall-detection/ | Detect Thin Walls
 [**estimate_print_time_deprecated**](GettingSceneInformationDeprecatedApi.md#estimate_print_time_deprecated) | **POST** /scene/estimate-print-time/ | Estimate Print Time
 [**get_model_deprecated**](GettingSceneInformationDeprecatedApi.md#get_model_deprecated) | **GET** /scene/models/{id}/ | Get model
 [**get_print_validation_deprecated**](GettingSceneInformationDeprecatedApi.md#get_print_validation_deprecated) | **GET** /scene/print-validation/ | Get Print Validation
 [**get_scene_deprecated**](GettingSceneInformationDeprecatedApi.md#get_scene_deprecated) | **GET** /scene/ | Get Scene
 [**get_scene_interferences_deprecated**](GettingSceneInformationDeprecatedApi.md#get_scene_interferences_deprecated) | **POST** /scene/interferences/ | Get Scene Interferences
 
+
+# **detect_thin_walls_deprecated**
+> ThinWallDetectionResultModel detect_thin_walls_deprecated(thin_wall_detection_request_model, var_async=var_async)
+
+Detect Thin Walls
+
+Deprecated. See [/scene/{scene_id}/thin-wall-detection/](#operation/detectThinWalls)
+
+### Example
+
+
+```python
+import formlabs_local_api
+from formlabs_local_api.models.thin_wall_detection_request_model import ThinWallDetectionRequestModel
+from formlabs_local_api.models.thin_wall_detection_result_model import ThinWallDetectionResultModel
+from formlabs_local_api.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost:44388
+# See configuration.py for a list of all supported configuration parameters.
+configuration = formlabs_local_api.Configuration(
+    host = "http://localhost:44388"
+)
+
+
+# Enter a context with an instance of the API client
+with formlabs_local_api.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = formlabs_local_api.GettingSceneInformationDeprecatedApi(api_client)
+    thin_wall_detection_request_model = formlabs_local_api.ThinWallDetectionRequestModel() # ThinWallDetectionRequestModel | Thin wall detection parameters
+    var_async = False # bool |  (optional) (default to False)
+
+    try:
+        # Detect Thin Walls
+        api_response = api_instance.detect_thin_walls_deprecated(thin_wall_detection_request_model, var_async=var_async)
+        print("The response of GettingSceneInformationDeprecatedApi->detect_thin_walls_deprecated:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling GettingSceneInformationDeprecatedApi->detect_thin_walls_deprecated: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **thin_wall_detection_request_model** | [**ThinWallDetectionRequestModel**](ThinWallDetectionRequestModel.md)| Thin wall detection parameters | 
+ **var_async** | **bool**|  | [optional] [default to False]
+
+### Return type
+
+[**ThinWallDetectionResultModel**](ThinWallDetectionResultModel.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**202** | Async operation accepted |  -  |
+**400** | Bad Request |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **estimate_print_time_deprecated**
 > EstimatedPrintTimeModel estimate_print_time_deprecated()
