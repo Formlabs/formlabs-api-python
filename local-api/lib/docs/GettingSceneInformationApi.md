@@ -4,6 +4,7 @@ All URIs are relative to *http://localhost:44388*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**detect_thin_walls**](GettingSceneInformationApi.md#detect_thin_walls) | **POST** /scene/{scene_id}/thin-wall-detection/ | Detect Thin Walls
 [**estimate_print_time**](GettingSceneInformationApi.md#estimate_print_time) | **POST** /scene/{scene_id}/estimate-print-time/ | Estimate Print Time
 [**get_all_scenes**](GettingSceneInformationApi.md#get_all_scenes) | **GET** /scenes/ | Get All Scenes
 [**get_model**](GettingSceneInformationApi.md#get_model) | **GET** /scene/{scene_id}/models/{id}/ | Get model
@@ -11,6 +12,81 @@ Method | HTTP request | Description
 [**get_scene**](GettingSceneInformationApi.md#get_scene) | **GET** /scene/{scene_id}/ | Get Scene
 [**get_scene_interferences**](GettingSceneInformationApi.md#get_scene_interferences) | **POST** /scene/{scene_id}/interferences/ | Get Scene Interferences
 
+
+# **detect_thin_walls**
+> ThinWallDetectionResultModel detect_thin_walls(scene_id, thin_wall_detection_request_model, var_async=var_async)
+
+Detect Thin Walls
+
+Detect thin-wall regions in models. Returns per-model thin-wall analysis based on a configurable wall-thickness threshold.
+
+### Example
+
+
+```python
+import formlabs_local_api
+from formlabs_local_api.models.thin_wall_detection_request_model import ThinWallDetectionRequestModel
+from formlabs_local_api.models.thin_wall_detection_result_model import ThinWallDetectionResultModel
+from formlabs_local_api.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost:44388
+# See configuration.py for a list of all supported configuration parameters.
+configuration = formlabs_local_api.Configuration(
+    host = "http://localhost:44388"
+)
+
+
+# Enter a context with an instance of the API client
+with formlabs_local_api.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = formlabs_local_api.GettingSceneInformationApi(api_client)
+    scene_id = 'scene_id_example' # str | The unique identifier of the scene
+    thin_wall_detection_request_model = formlabs_local_api.ThinWallDetectionRequestModel() # ThinWallDetectionRequestModel | Thin wall detection parameters
+    var_async = False # bool | If `true`, the server returns `202 Accepted` with an operation id and runs the detection in the background. Poll `/operations/{id}/` for completion. Recommended for large meshes or `models: \"ALL\"` requests where the synchronous response may be slow.  (optional) (default to False)
+
+    try:
+        # Detect Thin Walls
+        api_response = api_instance.detect_thin_walls(scene_id, thin_wall_detection_request_model, var_async=var_async)
+        print("The response of GettingSceneInformationApi->detect_thin_walls:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling GettingSceneInformationApi->detect_thin_walls: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **scene_id** | **str**| The unique identifier of the scene | 
+ **thin_wall_detection_request_model** | [**ThinWallDetectionRequestModel**](ThinWallDetectionRequestModel.md)| Thin wall detection parameters | 
+ **var_async** | **bool**| If &#x60;true&#x60;, the server returns &#x60;202 Accepted&#x60; with an operation id and runs the detection in the background. Poll &#x60;/operations/{id}/&#x60; for completion. Recommended for large meshes or &#x60;models: \&quot;ALL\&quot;&#x60; requests where the synchronous response may be slow.  | [optional] [default to False]
+
+### Return type
+
+[**ThinWallDetectionResultModel**](ThinWallDetectionResultModel.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**202** | Async operation accepted |  -  |
+**400** | Bad Request |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **estimate_print_time**
 > EstimatedPrintTimeModel estimate_print_time(scene_id, var_async=var_async)

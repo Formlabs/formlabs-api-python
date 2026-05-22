@@ -1,6 +1,6 @@
 [project]
 name = "formlabs_local_api"
-version = "0.9.13"
+version = "0.9.22"
 description = "Formlabs Local API"
 authors = [
   {name = "Formlabs Support",email = "team@openapitools.org"},
@@ -8,12 +8,12 @@ authors = [
 license = { text = "Proprietary" }
 readme = "README.md"
 keywords = ["OpenAPI", "OpenAPI-Generator", "Formlabs Local API"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 dependencies = [
   "urllib3 (>=2.1.0,<3.0.0)",
   "python-dateutil (>=2.8.2)",
-  "pydantic (>=2)",
+  "pydantic (>=2.11)",
   "typing-extensions (>=4.7.1)",
 ]
 
