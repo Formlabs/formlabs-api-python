@@ -129,7 +129,7 @@ with formlabs_local_api.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = formlabs_local_api.ModifyingASceneApi(api_client)
     scene_id = 'scene_id_example' # str | The unique identifier of the scene
-    auto_layout_request = {"models":"ALL","model_spacing_mm":1.0,"allow_overlapping_supports":false,"lock_rotation":false,"build_platform_2_optimized":false} # AutoLayoutRequest | Models to run the auto layout operation on
+    auto_layout_request = {"models":"ALL","model_spacing_mm":1.0,"allow_overlapping_supports":false,"lock_rotation":false,"build_platform_2_optimized":false,"seed":42,"layout_attempts":200,"iterations_per_attempt":25000} # AutoLayoutRequest | Models to run the auto layout operation on
     var_async = True # bool | Whether to run the operation asynchronously (optional)
 
     try:

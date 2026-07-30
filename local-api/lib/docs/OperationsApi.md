@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost:44388*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**call_print**](OperationsApi.md#call_print) | **POST** /scene/{scene_id}/print/ | Print
+[**delete_operation**](OperationsApi.md#delete_operation) | **DELETE** /operations/{id}/ | Delete Operation
 [**get_all_operations**](OperationsApi.md#get_all_operations) | **GET** /operations/ | List All Operations
 [**get_operation**](OperationsApi.md#get_operation) | **GET** /operations/{id}/ | Get Operation Status
 
@@ -87,6 +88,74 @@ No authorization required
 **200** | OK |  -  |
 **400** | Bad Request |  -  |
 **202** | Async operation accepted |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **delete_operation**
+> delete_operation(id)
+
+Delete Operation
+
+Remove a completed or failed operation from the server. Once deleted, subsequent GET requests for the same operation ID will return 404. In-progress operations cannot be deleted (returns 409).
+
+
+### Example
+
+
+```python
+import formlabs_local_api
+from formlabs_local_api.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost:44388
+# See configuration.py for a list of all supported configuration parameters.
+configuration = formlabs_local_api.Configuration(
+    host = "http://localhost:44388"
+)
+
+
+# Enter a context with an instance of the API client
+with formlabs_local_api.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = formlabs_local_api.OperationsApi(api_client)
+    id = 'id_example' # str | The unique identifier of the operation.
+
+    try:
+        # Delete Operation
+        api_instance.delete_operation(id)
+    except Exception as e:
+        print("Exception when calling OperationsApi->delete_operation: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **str**| The unique identifier of the operation. | 
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**204** | Operation deleted successfully. |  -  |
+**404** | Operation not found. |  -  |
+**409** | Operation is still in progress and cannot be deleted. |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

@@ -102,6 +102,8 @@ docs/SaveScreenshotRequestFlyaroundTransformTransformInner.md
 docs/ScanToModel200Response.md
 docs/ScanToModelRequest.md
 docs/SceneModel.md
+docs/SceneModelBuildVolume.md
+docs/SceneModelBuildVolumeDimensionsMm.md
 docs/ScenePositionModel.md
 docs/SceneTypeModel.md
 docs/ThinWallDetectionRequestModel.md
@@ -220,6 +222,8 @@ formlabs_local_api/models/save_screenshot_request_flyaround_transform_transform_
 formlabs_local_api/models/scan_to_model200_response.py
 formlabs_local_api/models/scan_to_model_request.py
 formlabs_local_api/models/scene_model.py
+formlabs_local_api/models/scene_model_build_volume.py
+formlabs_local_api/models/scene_model_build_volume_dimensions_mm.py
 formlabs_local_api/models/scene_position_model.py
 formlabs_local_api/models/scene_type_model.py
 formlabs_local_api/models/sla.py
@@ -343,6 +347,8 @@ test/test_save_screenshot_request_flyaround_transform_transform_inner.py
 test/test_scan_to_model200_response.py
 test/test_scan_to_model_request.py
 test/test_scene_model.py
+test/test_scene_model_build_volume.py
+test/test_scene_model_build_volume_dimensions_mm.py
 test/test_scene_position_model.py
 test/test_scene_type_model.py
 test/test_sla.py

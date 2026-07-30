@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
   title: Formlabs Local API
-  version: "0.9.22"
+  version: "0.9.27"
   termsOfService: /formlabs-api-license-agreement.html
   contact:
     name: Formlabs Support
@@ -452,6 +452,30 @@ components:
         id:
           type: string
           description: The ID of the created scene
+        build_volume:
+          type: object
+          description: The build volume geometry for this scene's printer and material.
+          properties:
+            dimensions_mm:
+              type: object
+              description: Build volume dimensions in millimeters (user coordinate space).
+              properties:
+                x:
+                  type: number
+                y:
+                  type: number
+                z:
+                  type: number
+              required:
+                - x
+                - y
+                - z
+            fillet_radius_mm:
+              type: number
+              description: Corner fillet radius of the build volume in millimeters. Non-zero for SLS printers with a rounded build volume.
+          required:
+            - dimensions_mm
+            - fillet_radius_mm
     RepairBehaviorModel:
       type: string
       description: The behavior to use when loading a broken model
@@ -2235,6 +2259,40 @@ paths:
                       type: number
                     y_max_mm:
                       type: number
+                seed:
+                  type: integer
+                  minimum: 0
+                  maximum: 4294967295
+                  description: |
+                    32-bit unsigned integer seed for the random number generator (0 to 2³²−1 /
+                    4 294 967 295). When set and `models` is a list of IDs, the layout result
+                    is fully deterministic: the submission order of those IDs is preserved, and
+                    `layout_attempts` and `iterations_per_attempt` are automatically pinned to
+                    their defaults (200 and 25 000) if not provided, eliminating
+                    thread-scheduling non-determinism. When `models` is `"ALL"`, models are
+                    ordered by their model IDs, which are randomly assigned at import time, so
+                    results are not deterministic across different import sessions even with a seed.
+                layout_attempts:
+                  type: integer
+                  minimum: 1
+                  maximum: 2500
+                  description: |
+                    Number of independent layout attempts to run in parallel across CPU cores.
+                    Each attempt starts from a different point in the RNG sequence, so increasing
+                    this value improves layout quality without proportionally increasing latency
+                    (compare `iterations_per_attempt`, which adds sequential work within each
+                    attempt). When `seed` is unset, results are non-deterministic regardless of
+                    this value. When `seed` is set, defaults to 200 if omitted. Maximum: 2500.
+                iterations_per_attempt:
+                  type: integer
+                  minimum: 1
+                  maximum: 250000
+                  description: |
+                    Maximum number of iterations the algorithm runs within each layout attempt
+                    (sequential, within a single core; compare `layout_attempts`, which adds
+                    parallel attempts). When `seed` is unset, this parameter has no effect on
+                    determinism; results remain non-deterministic. When `seed` is set, defaults
+                    to 25 000 if omitted. Maximum: 250 000.
             examples:
               All models, all parameters:
                 value:
@@ -2243,6 +2301,9 @@ paths:
                   allow_overlapping_supports: false
                   lock_rotation: false
                   build_platform_2_optimized: false
+                  seed: 42
+                  layout_attempts: 200
+                  iterations_per_attempt: 25000
               Specific models:
                 value:
                   models: ["0000537c-9ae2-426a-82ee-a007191a8fb5"]
@@ -2254,6 +2315,10 @@ paths:
                     x_max_mm: 90
                     y_min_mm: -60
                     y_max_mm: 60
+              Deterministic (seed only):
+                value:
+                  models: ["0000537c-9ae2-426a-82ee-a007191a8fb5"]
+                  seed: 42
       responses:
         "200":
           description: Success
@@ -3136,6 +3201,37 @@ paths:
                 $ref: '#/components/schemas/ErrorModel'
         '500':
           description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    delete:
+      summary: Delete Operation
+      operationId: deleteOperation
+      description: >
+        Remove a completed or failed operation from the server. Once deleted, subsequent
+        GET requests for the same operation ID will return 404. In-progress operations
+        cannot be deleted (returns 409).
+      tags:
+        - "Operations"
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the operation.
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Operation deleted successfully.
+        '404':
+          description: Operation not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        '409':
+          description: Operation is still in progress and cannot be deleted.
           content:
             application/json:
               schema:

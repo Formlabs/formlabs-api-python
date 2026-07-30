@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **material_usage** | [**MaterialUsageModel**](MaterialUsageModel.md) |  | [optional] 
 **layer_count** | **int** | The number of layers in the scene | [optional] 
 **id** | **str** | The ID of the created scene | [optional] 
+**build_volume** | [**SceneModelBuildVolume**](SceneModelBuildVolume.md) |  | [optional] 
 
 ## Example
 
