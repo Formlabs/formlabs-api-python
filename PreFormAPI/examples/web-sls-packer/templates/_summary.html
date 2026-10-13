@@ -1,6 +1,0 @@
-<div id="summary" hx-swap-oob="true" class="summary">
-  <span>{{ job.parts | length }} parts, {{ job.model_count }} models, {{ job.models_volume_mm3 | ml }} ml in parts</span>
-  <button hx-post="/jobs/{{ job.id }}/pack" hx-target="#builds-wrap" hx-swap="innerHTML" {% if not job.model_count or job.status == 'packing' %}disabled{% endif %}>
-    {% if job.status == 'packing' %}Packing…{% elif job.builds %}Pack again{% else %}Pack{% endif %}
-  </button>
-</div>

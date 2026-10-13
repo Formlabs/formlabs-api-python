@@ -102,7 +102,7 @@ requires-dist = [
 [[package]]
 name = "formlabs-sdk"
 version = "1.0.0a0"
-source = { git = "https://github.com/Formlabs/formlabs-api-python?subdirectory=PreFormAPI&rev=v1.0.0-alpha#19715ba4400773147bcb79411edf4b7d782714da" }
+source = { git = "https://github.com/Formlabs/formlabs-api-python?rev=v1.0.0-alpha#c5f49ef3647ce940ebdb0196393318832b3a69a3" }
 dependencies = [
     { name = "attrs" },
     { name = "formlabs-preform-api" },
@@ -700,7 +700,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
-    { name = "formlabs-sdk", git = "https://github.com/Formlabs/formlabs-api-python?subdirectory=PreFormAPI&rev=v1.0.0-alpha" },
+    { name = "formlabs-sdk", git = "https://github.com/Formlabs/formlabs-api-python?rev=v1.0.0-alpha" },
     { name = "jinja2", specifier = ">=3.1" },
     { name = "numpy", specifier = ">=1.26" },
     { name = "python-multipart", specifier = ">=0.0.9" },

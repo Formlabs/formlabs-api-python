@@ -54,7 +54,7 @@ requires-dist = [
 [[package]]
 name = "formlabs-sdk"
 version = "1.0.0a0"
-source = { git = "https://github.com/Formlabs/formlabs-api-python?subdirectory=PreFormAPI&rev=v1.0.0-alpha#19715ba4400773147bcb79411edf4b7d782714da" }
+source = { git = "https://github.com/Formlabs/formlabs-api-python?rev=v1.0.0-alpha#c5f49ef3647ce940ebdb0196393318832b3a69a3" }
 dependencies = [
     { name = "attrs" },
     { name = "formlabs-preform-api" },
@@ -108,7 +108,7 @@ wheels = [
 ]
 
 [[package]]
-name = "printability-report"
+name = "print-setting-rollout"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
@@ -116,7 +116,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "formlabs-sdk", git = "https://github.com/Formlabs/formlabs-api-python?subdirectory=PreFormAPI&rev=v1.0.0-alpha" }]
+requires-dist = [{ name = "formlabs-sdk", git = "https://github.com/Formlabs/formlabs-api-python?rev=v1.0.0-alpha" }]
 
 [[package]]
 name = "typing-extensions"
