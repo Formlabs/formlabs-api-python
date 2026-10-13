@@ -1,0 +1,5 @@
+<select name="setting">
+  {% for printer in printers.values() %}<optgroup label="{{ printer.label }}">
+    {% for m in printer.material_list %}<option value="{{ printer.machine_type }}|{{ m.code }}" {% if printer.machine_type ~ '|' ~ m.code == selected %}selected{% endif %}>{{ printer.label }} · {{ m.label }} · {{ m.setting_label }}, {{ m.layer_thickness_mm }} mm</option>{% endfor %}
+  </optgroup>{% endfor %}
+</select>

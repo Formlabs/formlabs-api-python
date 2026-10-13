@@ -1,0 +1,43 @@
+# Price list for instant quotes. The prices are fictional placeholders: replace
+# them with your own costs. Material codes, layer thicknesses, and print settings
+# come from /v1/print-setting/list/ and must be valid for machine_type.
+# print_setting defaults to DEFAULT.
+
+[shop]
+currency = "USD"
+machine_type = "FORM-4-0"          # Form 4; "FRML-4-0" for Form 4L
+machine_hour_rate = 6.00           # charged per hour of print time
+setup_fee = 5.00                   # charged once per job
+
+[materials.grey]
+label = "Grey V5"
+material_code = "FLGPGR05"
+layer_thickness_mm = 0.1
+price_per_ml = 0.15
+
+[materials.clear]
+label = "Clear V5"
+material_code = "FLGPCL05"
+layer_thickness_mm = 0.1
+price_per_ml = 0.15
+
+[materials.tough-2000]
+label = "Tough 2000 V2"
+material_code = "FLTO2002"
+layer_thickness_mm = 0.1
+# The catalog's default settings for this material on Form 4. SUPPORTSV2 gives each
+# part a larger raft, so fewer copies fit on the build platform.
+print_setting = "SUPPORTSV1"
+price_per_ml = 0.22
+
+[materials.rigid-10k]
+label = "Rigid 10K V1.1"
+material_code = "FLRG1011"
+layer_thickness_mm = 0.1
+price_per_ml = 0.35
+
+[materials.precision-model]
+label = "Precision Model V1"
+material_code = "FLPMBE01"
+layer_thickness_mm = 0.05
+price_per_ml = 0.14

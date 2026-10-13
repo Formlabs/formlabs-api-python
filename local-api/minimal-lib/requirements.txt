@@ -1,4 +1,0 @@
-requests >= 2.32.3
-setuptools >= 21.0.0
-typing-extensions >= 4.7.1
-psutil >= 5.9.5
