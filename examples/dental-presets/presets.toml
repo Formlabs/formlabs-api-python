@@ -1,0 +1,54 @@
+# Print presets for a dental lab, one per kind of case. These are the four dental
+# presets PreForm offers for Form 4B. A preset is a printer, material, print setting,
+# and layer thickness, an occlusal plane tilt for the dental orientation, optional
+# support settings, and a layout. Add a preset as another [presets.<name>] table; any
+# key it leaves out comes from [defaults]. The printer, material, print setting, and
+# layer thickness must be a combination that /v1/print-setting/list/ offers.
+
+[defaults]
+# Form 4 and Form 4B share this machine type. Form 4L and Form 4BL use "FRML-4-0".
+machine_type = "FORM-4-0"
+print_setting = "DEFAULT"
+tilt_deg = 0
+# Intraoral and model scans are in millimeters, as in PreForm's dental presets.
+units = "MILLIMETERS"
+# Scans are often not watertight and print as they are.
+repair_behavior = "IGNORE"
+# DENTAL uses the layout parameters of PreForm's dental workspace.
+layout_mode = "DENTAL"
+model_spacing_mm = 1.0
+
+[presets.orthodontic-models]
+material = "Fast Model V1"
+material_code = "FLFMGR01"
+print_setting = "F4_FAST_ARCHES"
+layer_thickness_mm = 0.16
+
+[presets.restorative-models]
+material = "Precision Model V1"
+material_code = "FLPMBE01"
+layer_thickness_mm = 0.05
+
+[presets.occlusal-guards]
+material = "LT Comfort V1.1"
+material_code = "FLDLCO11"
+layer_thickness_mm = 0.1
+tilt_deg = 15
+[presets.occlusal-guards.supports]
+raft_type = "FULL_RAFT"
+raft_label_enabled = true
+density = 1.0
+touchpoint_size_mm = 0.5
+internal_supports_enabled = true
+
+[presets.surgical-guides]
+material = "Surgical Guide V1"
+material_code = "FLSGAM01"
+layer_thickness_mm = 0.1
+tilt_deg = 15
+[presets.surgical-guides.supports]
+raft_type = "FULL_RAFT"
+raft_label_enabled = true
+density = 1.0
+touchpoint_size_mm = 0.5
+internal_supports_enabled = true

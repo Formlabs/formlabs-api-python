@@ -1,0 +1,21 @@
+<article class="card">
+  <img src="/jobs/{{ job.id }}/builds/{{ build.number }}.png?v={{ cache_key(job.build_path(build.number, '.png')) }}" alt="Build {{ build.number }}">
+  <header><strong>Build {{ build.number }}</strong> · {{ build.height_mm | mm }} mm tall · density {{ '%.1f' | format(build.density * 100) }}%{% if not build.released %} <mark>below {{ '%.0f' | format(job.min_density * 100) }}%</mark>{% endif %}</header>
+  <ul>{% for name, count in build.models.items() %}<li>{{ count }} × {{ name }}</li>{% endfor %}</ul>
+  {% if build.print_time_s %}<p><small>Print {{ build.print_time_s | hm }}{% if build.cool_time_s %}, cool to removal {{ build.cool_time_s | hm }}{% endif %} · {{ build.powder_kg }} kg powder, {{ build.sintered_kg }} kg sintered</small></p>{% endif %}
+  {% if build.carried %}<details class="carried"><summary><small>{{ build.carried | length }} offered but not placed, carried to the next build</small></summary><small>{{ build.carried | join(', ') }}</small></details>{% endif %}
+  <div class="grid actions">
+    <a href="/jobs/{{ job.id }}/builds/{{ build.number }}.form" role="button" download>Download .form</a>
+  </div>
+  <form class="print" hx-post="/jobs/{{ job.id }}/builds/{{ build.number }}/print" hx-target="find .print-status" hx-swap="innerHTML" hx-indicator="find button">
+    <fieldset role="group">
+      {% if devices %}
+      <select name="printer">{% for d in devices %}<option value="{{ d.id }}">{{ d.id }} · {{ d.product_name }} · {{ d.status }}</option>{% endfor %}</select>
+      {% else %}
+      <input name="printer" placeholder="Printer serial or IP" required>
+      {% endif %}
+      <button type="submit" class="secondary">Send to printer</button>
+    </fieldset>
+    <div class="print-status"></div>
+  </form>
+</article>

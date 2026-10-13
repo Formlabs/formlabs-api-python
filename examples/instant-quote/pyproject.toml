@@ -1,0 +1,12 @@
+[project]
+name = "instant-quote"
+version = "0.1.0"
+description = "Quote parts in every material on a price list: resin, print time, and price."
+requires-python = ">=3.11"
+dependencies = [
+  "formlabs-sdk @ git+https://github.com/Formlabs/formlabs-api-python@v1.0.0-alpha",
+]
+
+# An example to run with `uv run`, not a package to build.
+[tool.uv]
+package = false

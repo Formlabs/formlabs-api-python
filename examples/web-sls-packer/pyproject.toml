@@ -1,0 +1,18 @@
+[project]
+name = "web-sls-packer"
+version = "0.1.0"
+description = "Pack STL parts into Fuse 1+ and Fuse X1 build volumes from a browser, with PreForm Server behind it."
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115",
+  "formlabs-sdk @ git+https://github.com/Formlabs/formlabs-api-python@v1.0.0-alpha",
+  "jinja2>=3.1",
+  "numpy>=1.26",
+  "python-multipart>=0.0.9",
+  "trimesh>=4.4",
+  "uvicorn>=0.30",
+]
+
+# An example to run with `uv run`, not a package to build.
+[tool.uv]
+package = false

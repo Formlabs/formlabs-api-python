@@ -1,0 +1,11 @@
+<tr id="part-{{ part.id }}" data-id="{{ part.id }}" class="{% if part.reject_reason %}rejected{% endif %}">
+  <td>{% if part.thumbnail %}<img class="thumb" src="/jobs/{{ job.id }}/parts/{{ part.id }}.png?v={{ cache_key(job.thumbnail_path(part)) }}" alt="" title="Click to view and orient" data-stl="/jobs/{{ job.id }}/parts/{{ part.id }}.stl" data-title="{{ part.filename }}" data-part="{{ part.id }}" data-orientation="{{ (part.orientation or [0, 0, 0]) | join(',') }}" data-orient-url="/jobs/{{ job.id }}/parts/{{ part.id }}/orientation">{% endif %}</td>
+  <td>{{ part.filename }}{% if part.orientation %}<br><small class="muted">posed {{ part.orientation | join('° / ') }}°</small>{% endif %}{% if part.reject_reason %}<br><small class="warn">{{ part.reject_reason }}</small>{% endif %}</td>
+  <td class="size">{{ part.footprint_extents[0] | mm }} × {{ part.footprint_extents[1] | mm }} × {{ part.footprint_extents[2] | mm }}</td>
+  <td>{{ part.volume_mm3 | ml }}</td>
+  <td><input type="number" name="quantity" min="1" value="{{ part.quantity }}" hx-post="/jobs/{{ job.id }}/parts/{{ part.id }}" hx-include="closest tr" hx-target="#part-{{ part.id }}" hx-swap="outerHTML" hx-trigger="change"></td>
+  <td><select name="lock" hx-post="/jobs/{{ job.id }}/parts/{{ part.id }}" hx-include="closest tr" hx-target="#part-{{ part.id }}" hx-swap="outerHTML" hx-trigger="change">
+    {% for lock in LOCKS %}<option value="{{ lock }}" {% if lock == part.lock %}selected{% endif %}>{{ LOCK_LABELS[lock] }}</option>{% endfor %}
+  </select></td>
+  <td><button class="secondary outline" hx-delete="/jobs/{{ job.id }}/parts/{{ part.id }}" hx-target="#part-{{ part.id }}" hx-swap="delete" title="Remove">×</button></td>
+</tr>
