@@ -5,7 +5,7 @@ description = "Pack STL parts into Fuse 1+ and Fuse X1 build volumes from a brow
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.115",
-  "formlabs-sdk @ git+https://github.com/Formlabs/formlabs-api-python@v1.0.0-alpha",
+  "formlabs-sdk @ git+https://github.com/Formlabs/formlabs-api-python@v1.0.0-alpha.post1",
   "jinja2>=3.1",
   "numpy>=1.26",
   "python-multipart>=0.0.9",

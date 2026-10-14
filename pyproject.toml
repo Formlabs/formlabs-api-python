@@ -1,6 +1,6 @@
 [project]
 name = "formlabs-sdk"
-version = "1.0.0-alpha"
+version = "1.0.0-alpha.post1"
 description = "Formlabs SDK for the PreForm API"
 authors = [
   {name = "Formlabs"},
@@ -13,7 +13,7 @@ requires-python = ">=3.11"
 dependencies = [
   "httpx>=0.27,<1.0",
   "attrs>=22.2",
-  "formlabs-preform-api @ https://downloads.formlabs.com/PreFormServer/Release/3.64.0/formlabs_preform_api-1.0.0a0-3.64.0_release_releaser_661_140113-py3-none-any.whl#sha256=6d6e15172f5e5fee3549b47b543bf032d5585c43b1e6ef5a0a14915f06e93885",
+  "formlabs-preform-api @ https://downloads.formlabs.com/PreFormServer/Release/3.64.0/formlabs_preform_api-1.0.0a0-3.64.0_release_releaser_663_140194-py3-none-any.whl#sha256=6d6e15172f5e5fee3549b47b543bf032d5585c43b1e6ef5a0a14915f06e93885",
 ]
 
 [project.optional-dependencies]
