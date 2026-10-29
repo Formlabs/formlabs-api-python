@@ -5,11 +5,14 @@ from __future__ import annotations
 import dataclasses
 import json
 import secrets
+import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
 JOBS_DIR = Path(__file__).resolve().parent / "jobs"
+# The pack worker saves a job while requests load it, and writing job.json empties it first.
+_JOB_FILE = threading.Lock()
 # A build packed less densely than this is marked for a person to look at before it prints.
 MIN_DENSITY = 0.12
 
@@ -92,7 +95,9 @@ class Job:
 
     def save(self) -> None:
         self.dir.mkdir(parents=True, exist_ok=True)
-        (self.dir / "job.json").write_text(json.dumps(dataclasses.asdict(self), indent=1))
+        text = json.dumps(dataclasses.asdict(self), indent=1)
+        with _JOB_FILE:
+            (self.dir / "job.json").write_text(text)
 
 
 def new_job(name: str, machine_type: str, material_code: str) -> Job:
@@ -105,7 +110,9 @@ def new_job(name: str, machine_type: str, material_code: str) -> Job:
 
 
 def load_job(job_id: str) -> Job:
-    raw = json.loads((JOBS_DIR / job_id / "job.json").read_text())
+    with _JOB_FILE:
+        text = (JOBS_DIR / job_id / "job.json").read_text()
+    raw = json.loads(text)
     raw["parts"] = [Part(**p) for p in raw["parts"]]
     raw["builds"] = [Build(**b) for b in raw["builds"]]
     return Job(**raw)

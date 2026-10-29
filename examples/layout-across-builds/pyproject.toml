@@ -1,0 +1,12 @@
+[project]
+name = "layout-across-builds"
+version = "0.1.0"
+description = "Lay out more parts than fit on one build platform, across as many builds as it takes."
+requires-python = ">=3.11"
+dependencies = [
+  "formlabs-sdk @ git+https://github.com/Formlabs/formlabs-api-python@v1.0.0-alpha.post2",
+]
+
+# An example to run with `uv run`, not a package to build.
+[tool.uv]
+package = false

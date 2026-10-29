@@ -52,7 +52,6 @@ _cancels: dict[str, threading.Event] = {}
 _prints: dict[tuple[str, int], preform.PrintUpload] = {}
 
 
-# --8<-- [start:setup]
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     with FormlabsClient() as client:
@@ -67,7 +66,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Web SLS Packer", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=HERE / "static"), name="static")
-# --8<-- [end:setup]
 
 
 def render(request: Request, name: str, **ctx) -> HTMLResponse:
@@ -156,7 +154,6 @@ def set_options(job_id: str, spacing_mm: str = Form(""), min_density: float = Fo
     return HTMLResponse(fragment("_summary.html", job=job))
 
 
-# --8<-- [start:add_parts]
 @app.post("/jobs/{job_id}/parts", response_class=HTMLResponse)
 def add_parts(job_id: str, files: list[UploadFile]):
     """Save each mesh, measure it, and render a thumbnail.
@@ -187,7 +184,6 @@ def add_parts(job_id: str, files: list[UploadFile]):
     job.parts += added
     job.save()
     return _rows_and_summary(job, added)
-# --8<-- [end:add_parts]
 
 
 @app.post("/jobs/{job_id}/parts/{part_id}", response_class=HTMLResponse)

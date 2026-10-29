@@ -6,6 +6,7 @@ Regenerate with: python sdk/codegen/generate_preform_api_facade.py
 
 from __future__ import annotations
 
+import os
 from typing import TYPE_CHECKING, Any
 from collections.abc import Callable, Sequence
 from uuid import UUID
@@ -218,16 +219,22 @@ def _select_body(
     return matches[0](**provided)
 
 
+def _fspath(value: Any) -> Any:
+    return value if isinstance(value, Unset) else os.fspath(value)
+
+
 class AsyncPreFormApiFacade:
     """Mixin giving AsyncPreFormApi one typed method per Local API operation.
 
     Method names are the spec operationIds in snake_case; request-body
     fields are flattened into keyword arguments. Id-valued arguments
-    accept a ``UUID`` or its string form. Methods for ``?async=true``
-    endpoints take ``poll_interval``, ``timeout``, and ``on_progress``,
-    forwarded to ``run()``. Every method raises ``PreFormApiError`` with
-    code ``NOT_CONNECTED`` until ``launch()`` or ``connect()`` has bound
-    the handle. ``login`` is hand-written on AsyncPreFormApi itself.
+    accept a ``UUID`` or its string form; file-path arguments accept a
+    ``str`` or an ``os.PathLike``. Methods for ``?async=true`` endpoints
+    take ``poll_interval`` (``None`` uses the handle's), ``timeout``, and
+    ``on_progress``, forwarded to ``run()``. Every method raises
+    ``PreFormApiError`` with code ``NOT_CONNECTED`` until ``launch()`` or
+    ``connect()`` has bound the handle. ``login`` is hand-written on
+    AsyncPreFormApi itself.
     """
 
     async def get_user_info(self: AsyncPreFormApi) -> UserInfo:
@@ -244,7 +251,7 @@ class AsyncPreFormApiFacade:
         *,
         timeout_seconds: int | Unset = 60,
         printer: str | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> DiscoverDevicesResponse200:
@@ -284,8 +291,8 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         printer: str,
-        file_path: str,
-        poll_interval: float = 0.5,
+        file_path: str | os.PathLike[str],
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> None:
@@ -297,7 +304,7 @@ class AsyncPreFormApiFacade:
         """
         body = UploadFirmwareRequest(
             printer=printer,
-            file_path=file_path,
+            file_path=_fspath(file_path),
         )
         await self.run(
             _upload_firmware, poll_interval=poll_interval, timeout=timeout, on_progress=on_progress, body=body
@@ -319,7 +326,7 @@ class AsyncPreFormApiFacade:
         iterations_per_attempt: int | Unset = UNSET,
         on_layout_failure: OnLayoutFailure | Unset = UNSET,
         max_ejections: int | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> AutoLayoutResponse:
@@ -367,7 +374,7 @@ class AsyncPreFormApiFacade:
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         mode: AutoOrientMode | Unset = UNSET,
         tilt: int | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ModifiedModels:
@@ -405,7 +412,7 @@ class AsyncPreFormApiFacade:
         seed: int | Unset = UNSET,
         packing_mode: PackingMode | Unset = UNSET,
         on_pack_failure: OnPackFailure | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> AutoPackResponse:
@@ -453,7 +460,7 @@ class AsyncPreFormApiFacade:
         raft_label_enabled: bool | Unset = UNSET,
         breakaway_structure_enabled: bool | Unset = UNSET,
         internal_supports_enabled: bool | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ModifiedModels:
@@ -577,7 +584,7 @@ class AsyncPreFormApiFacade:
         enable_honeycomb_infill: bool | Unset = UNSET,
         enable_smooth_contour_extended_sides: bool | Unset = True,
         keep_disconnected_mesh_components: bool | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> DentalHollowingResult:
@@ -630,7 +637,7 @@ class AsyncPreFormApiFacade:
         scene_id: UUID | str,
         drain_holes: list[DrainHole],
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> DrillResult:
@@ -680,7 +687,7 @@ class AsyncPreFormApiFacade:
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         packing_options: PackingOptions | Unset = UNSET,
         fill_to_height_mm: float | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> NewModelIds:
@@ -711,7 +718,7 @@ class AsyncPreFormApiFacade:
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         layout_options: LayoutOptions | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> NewModelIds:
@@ -760,7 +767,7 @@ class AsyncPreFormApiFacade:
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         feature_size_mm: float | Unset = 1.0,
         accuracy: float | Unset = 0.5,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> HollowResult:
@@ -791,7 +798,7 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         scene_id: UUID | str,
-        file: str,
+        file: str | os.PathLike[str],
         repair_behavior: RepairBehavior | Unset = UNSET,
         name: str | Unset = UNSET,
         units: ImportUnits | Unset = UNSET,
@@ -799,7 +806,7 @@ class AsyncPreFormApiFacade:
         chordal_tolerance_um: float | Unset = 10.0,
         angle_tolerance_deg: float | Unset = 5.0,
         split_multi_model_file: bool | Unset = False,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ImportModelResult:
@@ -818,7 +825,7 @@ class AsyncPreFormApiFacade:
         """
         body = ImportModelRequest(
             scene_id=scene_id,
-            file=file,
+            file=_fspath(file),
             repair_behavior=repair_behavior,
             name=name,
             units=units,
@@ -845,7 +852,7 @@ class AsyncPreFormApiFacade:
         depth_mm: float,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         application_mode: LabelApplicationMode | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> LabelResult:
@@ -922,7 +929,7 @@ class AsyncPreFormApiFacade:
         *,
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ModifiedModels:
@@ -948,7 +955,7 @@ class AsyncPreFormApiFacade:
         *,
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> RepairModelsResponse200:
@@ -975,7 +982,7 @@ class AsyncPreFormApiFacade:
         scene_id: UUID | str,
         model_id: UUID | str,
         replacement_model_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ReplaceModelResult:
@@ -1145,7 +1152,7 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         scene_id: UUID | str,
-        file: str,
+        file: str | os.PathLike[str],
     ) -> None:
         """Save a scene's print setting to a .fps file
 
@@ -1155,7 +1162,7 @@ class AsyncPreFormApiFacade:
         """
         body = SavePrintSettingBody(
             scene_id=scene_id,
-            file=file,
+            file=_fspath(file),
         )
         await self.call(_save_print_setting, body=body)
         return None
@@ -1188,7 +1195,7 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         scene_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateCupsResponse200:
@@ -1248,7 +1255,7 @@ class AsyncPreFormApiFacade:
         *,
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateManifoldnessResponse200:
@@ -1273,7 +1280,7 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         scene_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateMinimaResponse200:
@@ -1296,7 +1303,7 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         scene_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateSupportednessResponse200:
@@ -1321,7 +1328,7 @@ class AsyncPreFormApiFacade:
         scene_id: UUID | str,
         threshold_mm: float,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateThinFeaturesResponse200:
@@ -1348,7 +1355,7 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         scene_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> CalculatePrintTimeResponse200:
@@ -1370,7 +1377,7 @@ class AsyncPreFormApiFacade:
     async def create_scene(
         self: AsyncPreFormApi,
         *,
-        fps_file: str | Unset = UNSET,
+        fps_file: str | os.PathLike[str] | Unset = UNSET,
         machine_type: str | Unset = UNSET,
         material_code: str | Unset = UNSET,
         layer_thickness_mm: CreateSceneLayerThicknessMmType1 | float | str | Unset = UNSET,
@@ -1385,7 +1392,7 @@ class AsyncPreFormApiFacade:
             layer_thickness_mm: A layer thickness in millimeters, accepted as a JSON number, the literal string "ADAPTIVE" for adaptive layer thickness, or a numeric value formatted as a string (e.g. "0.025"). "ADAPTIVE" is accepted only where the settings catalog offers an adaptive variant, on older printer models (see `/v1/print-setting/list/`).
             print_setting: Print setting profile code, e.g. "DEFAULT".
         """
-        provided = _provided(fps_file=fps_file, machine_type=machine_type, material_code=material_code, layer_thickness_mm=layer_thickness_mm, print_setting=print_setting)
+        provided = _provided(fps_file=_fspath(fps_file), machine_type=machine_type, material_code=material_code, layer_thickness_mm=layer_thickness_mm, print_setting=print_setting)
         body = _select_body(
             "create_scene",
             provided,
@@ -1464,8 +1471,8 @@ class AsyncPreFormApiFacade:
     async def open_form_file(
         self: AsyncPreFormApi,
         *,
-        file: str,
-        poll_interval: float = 0.5,
+        file: str | os.PathLike[str],
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> OpenFormFileResponse200:
@@ -1475,7 +1482,7 @@ class AsyncPreFormApiFacade:
             file: Path to the .form file to load.
         """
         body = OpenFormRequest(
-            file=file,
+            file=_fspath(file),
         )
         result = await self.run(
             _open_form_file, poll_interval=poll_interval, timeout=timeout, on_progress=on_progress, body=body
@@ -1492,7 +1499,7 @@ class AsyncPreFormApiFacade:
         job_name: str,
         find_printer_timeout_seconds: int | Unset = 30,
         print_now: bool | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> PrintSceneResponse200:
@@ -1523,7 +1530,7 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         scene_id: UUID | str,
-        file: str,
+        file: str | os.PathLike[str],
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         view_type: RenderViewType | Unset = UNSET,
         image_size_px: int | Unset = 820,
@@ -1531,7 +1538,7 @@ class AsyncPreFormApiFacade:
         yaw: float | Unset = 45.0,
         pitch: float | Unset = 35.264,
         flyaround_transform: Any | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> None:
@@ -1550,7 +1557,7 @@ class AsyncPreFormApiFacade:
         """
         body = RenderRequest(
             scene_id=scene_id,
-            file=file,
+            file=_fspath(file),
             model_ids=model_ids,
             view_type=view_type,
             image_size_px=image_size_px,
@@ -1567,10 +1574,10 @@ class AsyncPreFormApiFacade:
     async def save_form_file(
         self: AsyncPreFormApi,
         *,
-        file: str,
+        file: str | os.PathLike[str],
         scene_ids: Sequence[UUID | str],
         project_name: str | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> None:
@@ -1582,7 +1589,7 @@ class AsyncPreFormApiFacade:
             project_name: Name of the project inside the file, returned by `/v1/scene/open/`. Omitted means no name is stored.
         """
         body = SaveSceneRequest(
-            file=file,
+            file=_fspath(file),
             scene_ids=scene_ids,
             project_name=project_name,
         )
@@ -1595,7 +1602,7 @@ class AsyncPreFormApiFacade:
         self: AsyncPreFormApi,
         *,
         scene_id: UUID | str | Unset = UNSET,
-        fps_file: str | Unset = UNSET,
+        fps_file: str | os.PathLike[str] | Unset = UNSET,
         machine_type: str | Unset = UNSET,
         material_code: str | Unset = UNSET,
         layer_thickness_mm: CreateSceneLayerThicknessMmType1 | float | str | Unset = UNSET,
@@ -1611,7 +1618,7 @@ class AsyncPreFormApiFacade:
             layer_thickness_mm: A layer thickness in millimeters, accepted as a JSON number, the literal string "ADAPTIVE" for adaptive layer thickness, or a numeric value formatted as a string (e.g. "0.025"). "ADAPTIVE" is accepted only where the settings catalog offers an adaptive variant, on older printer models (see `/v1/print-setting/list/`).
             print_setting: Print setting profile code, e.g. "DEFAULT".
         """
-        provided = _provided(scene_id=scene_id, fps_file=fps_file, machine_type=machine_type, material_code=material_code, layer_thickness_mm=layer_thickness_mm, print_setting=print_setting)
+        provided = _provided(scene_id=scene_id, fps_file=_fspath(fps_file), machine_type=machine_type, material_code=material_code, layer_thickness_mm=layer_thickness_mm, print_setting=print_setting)
         body = _select_body(
             "update_scene",
             provided,
@@ -1647,7 +1654,7 @@ class PreFormApiFacade:
         *,
         timeout_seconds: int | Unset = 60,
         printer: str | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> DiscoverDevicesResponse200:
@@ -1676,8 +1683,8 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         printer: str,
-        file_path: str,
-        poll_interval: float = 0.5,
+        file_path: str | os.PathLike[str],
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> None:
@@ -1704,7 +1711,7 @@ class PreFormApiFacade:
         iterations_per_attempt: int | Unset = UNSET,
         on_layout_failure: OnLayoutFailure | Unset = UNSET,
         max_ejections: int | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> AutoLayoutResponse:
@@ -1733,7 +1740,7 @@ class PreFormApiFacade:
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         mode: AutoOrientMode | Unset = UNSET,
         tilt: int | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ModifiedModels:
@@ -1757,7 +1764,7 @@ class PreFormApiFacade:
         seed: int | Unset = UNSET,
         packing_mode: PackingMode | Unset = UNSET,
         on_pack_failure: OnPackFailure | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> AutoPackResponse:
@@ -1791,7 +1798,7 @@ class PreFormApiFacade:
         raft_label_enabled: bool | Unset = UNSET,
         breakaway_structure_enabled: bool | Unset = UNSET,
         internal_supports_enabled: bool | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ModifiedModels:
@@ -1877,7 +1884,7 @@ class PreFormApiFacade:
         enable_honeycomb_infill: bool | Unset = UNSET,
         enable_smooth_contour_extended_sides: bool | Unset = True,
         keep_disconnected_mesh_components: bool | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> DentalHollowingResult:
@@ -1908,7 +1915,7 @@ class PreFormApiFacade:
         scene_id: UUID | str,
         drain_holes: list[DrainHole],
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> DrillResult:
@@ -1943,7 +1950,7 @@ class PreFormApiFacade:
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         packing_options: PackingOptions | Unset = UNSET,
         fill_to_height_mm: float | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> NewModelIds:
@@ -1963,7 +1970,7 @@ class PreFormApiFacade:
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         layout_options: LayoutOptions | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> NewModelIds:
@@ -1998,7 +2005,7 @@ class PreFormApiFacade:
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         feature_size_mm: float | Unset = 1.0,
         accuracy: float | Unset = 0.5,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> HollowResult:
@@ -2017,7 +2024,7 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         scene_id: UUID | str,
-        file: str,
+        file: str | os.PathLike[str],
         repair_behavior: RepairBehavior | Unset = UNSET,
         name: str | Unset = UNSET,
         units: ImportUnits | Unset = UNSET,
@@ -2025,7 +2032,7 @@ class PreFormApiFacade:
         chordal_tolerance_um: float | Unset = 10.0,
         angle_tolerance_deg: float | Unset = 5.0,
         split_multi_model_file: bool | Unset = False,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ImportModelResult:
@@ -2055,7 +2062,7 @@ class PreFormApiFacade:
         depth_mm: float,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         application_mode: LabelApplicationMode | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> LabelResult:
@@ -2108,7 +2115,7 @@ class PreFormApiFacade:
         *,
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ModifiedModels:
@@ -2125,7 +2132,7 @@ class PreFormApiFacade:
         *,
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> RepairModelsResponse200:
@@ -2143,7 +2150,7 @@ class PreFormApiFacade:
         scene_id: UUID | str,
         model_id: UUID | str,
         replacement_model_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ReplaceModelResult:
@@ -2273,7 +2280,7 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         scene_id: UUID | str,
-        file: str,
+        file: str | os.PathLike[str],
     ) -> None:
         """Save a scene's print setting to a .fps file
 
@@ -2305,7 +2312,7 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         scene_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateCupsResponse200:
@@ -2349,7 +2356,7 @@ class PreFormApiFacade:
         *,
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateManifoldnessResponse200:
@@ -2365,7 +2372,7 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         scene_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateMinimaResponse200:
@@ -2380,7 +2387,7 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         scene_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateSupportednessResponse200:
@@ -2397,7 +2404,7 @@ class PreFormApiFacade:
         scene_id: UUID | str,
         threshold_mm: float,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> ValidateThinFeaturesResponse200:
@@ -2414,7 +2421,7 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         scene_id: UUID | str,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> CalculatePrintTimeResponse200:
@@ -2428,7 +2435,7 @@ class PreFormApiFacade:
     def create_scene(
         self: PreFormApi,
         *,
-        fps_file: str | Unset = UNSET,
+        fps_file: str | os.PathLike[str] | Unset = UNSET,
         machine_type: str | Unset = UNSET,
         material_code: str | Unset = UNSET,
         layer_thickness_mm: CreateSceneLayerThicknessMmType1 | float | str | Unset = UNSET,
@@ -2500,8 +2507,8 @@ class PreFormApiFacade:
     def open_form_file(
         self: PreFormApi,
         *,
-        file: str,
-        poll_interval: float = 0.5,
+        file: str | os.PathLike[str],
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> OpenFormFileResponse200:
@@ -2520,7 +2527,7 @@ class PreFormApiFacade:
         job_name: str,
         find_printer_timeout_seconds: int | Unset = 30,
         print_now: bool | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> PrintSceneResponse200:
@@ -2539,7 +2546,7 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         scene_id: UUID | str,
-        file: str,
+        file: str | os.PathLike[str],
         model_ids: Sequence[UUID | str] | Unset = UNSET,
         view_type: RenderViewType | Unset = UNSET,
         image_size_px: int | Unset = 820,
@@ -2547,7 +2554,7 @@ class PreFormApiFacade:
         yaw: float | Unset = 45.0,
         pitch: float | Unset = 35.264,
         flyaround_transform: Any | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> None:
@@ -2569,10 +2576,10 @@ class PreFormApiFacade:
     def save_form_file(
         self: PreFormApi,
         *,
-        file: str,
+        file: str | os.PathLike[str],
         scene_ids: Sequence[UUID | str],
         project_name: str | Unset = UNSET,
-        poll_interval: float = 0.5,
+        poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
     ) -> None:
@@ -2589,7 +2596,7 @@ class PreFormApiFacade:
         self: PreFormApi,
         *,
         scene_id: UUID | str | Unset = UNSET,
-        fps_file: str | Unset = UNSET,
+        fps_file: str | os.PathLike[str] | Unset = UNSET,
         machine_type: str | Unset = UNSET,
         material_code: str | Unset = UNSET,
         layer_thickness_mm: CreateSceneLayerThicknessMmType1 | float | str | Unset = UNSET,

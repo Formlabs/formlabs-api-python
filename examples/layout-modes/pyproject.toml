@@ -1,0 +1,12 @@
+[project]
+name = "layout-modes"
+version = "0.1.0"
+description = "Lay out the same parts with each auto-layout option and compare the builds."
+requires-python = ">=3.11"
+dependencies = [
+  "formlabs-sdk @ git+https://github.com/Formlabs/formlabs-api-python@v1.0.0-alpha.post2",
+]
+
+# An example to run with `uv run`, not a package to build.
+[tool.uv]
+package = false

@@ -51,4 +51,4 @@ __all__ = [
     "UserToken",
 ]
 
-__version__ = "1.0.0-alpha.post1"
+__version__ = "1.0.0-alpha.post2"

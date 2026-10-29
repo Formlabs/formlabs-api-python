@@ -139,7 +139,6 @@ class Packer:
         }
 
 
-# --8<-- [start:run]
 def run(job: Job, on_build: Callable[[Build], None],
         cancel: threading.Event | None = None) -> None:
     """Pack the job's parts into builds, saving the job after each.
@@ -196,4 +195,3 @@ def run(job: Job, on_build: Callable[[Build], None],
         job.builds.append(build)
         job.save()
         on_build(build)
-# --8<-- [end:run]

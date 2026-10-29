@@ -8,7 +8,7 @@ running it.
 
 | | |
 |---|---|
-| The six below | Worked examples, one uv project per folder. Each has a guide on the developer portal. Run one from its folder with `uv run <script>.py`. |
+| The eleven below | Worked examples, one uv project per folder. Each has a guide on the developer portal. Run one from its folder with `uv run <script>.py`. |
 | [`smoke_tests/`](smoke_tests/) | One short program per API surface, each exercising it end to end against live services. Run these to check that a change still works against the real thing. |
 
 ## smoke_tests
@@ -26,9 +26,14 @@ example, and its zip on the GitHub Release, installs the SDK release it was publ
 
 | | |
 |---|---|
+| [`quickstart/`](quickstart/) | Prepare an STL file for a Form 4, then queue it on a printer or save it as a `.form` file. |
 | [`printability-report/`](printability-report/) | Check STL files before a job is confirmed: PASS, WARN or FAIL for each part. |
 | [`instant-quote/`](instant-quote/) | Quote parts in every material on a price list: resin, print time and price. |
-| [`dental-presets/`](dental-presets/) | Apply a print preset to a set of scans and save a print-ready `.form` file. |
 | [`print-setting-rollout/`](print-setting-rollout/) | Move every queued job from one print setting to another. |
 | [`part-labels/`](part-labels/) | Turn a `.form` file into a billing summary and a bag label for each part. |
+| [`serial-numbers/`](serial-numbers/) | Label every part in a build with a serial number. |
+| [`layout-modes/`](layout-modes/) | Lay out the same parts with each auto-layout option and compare the builds. |
+| [`pack-modes/`](pack-modes/) | Pack the same parts with each model lock and compare the builds. |
+| [`layout-across-builds/`](layout-across-builds/) | Lay out more parts than fit on one build platform, across as many builds as it takes. |
+| [`pack-across-builds/`](pack-across-builds/) | Pack more parts than fit in one SLS build volume, across as many builds as it takes. |
 | [`web-sls-packer/`](web-sls-packer/) | A web app that packs STL parts into Fuse 1+ and Fuse X1 builds and sends them to printers. |
