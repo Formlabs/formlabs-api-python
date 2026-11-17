@@ -49,6 +49,7 @@ _DATA_DIR_VARIABLE = "PREFORM_ENV_DATA_DIRECTORY"
 _READY_SENTINEL = "READY FOR INPUT"
 _PORT_IN_USE_SENTINEL = "address is already in use"
 _OUTPUT_TAIL_LINES = 100
+_DRAIN_CHUNK = 64 * 1024
 _TERMINATE_GRACE = 10.0
 
 
@@ -327,7 +328,7 @@ class AsyncPreFormApi(AsyncPreFormApiFacade):
             base_url=base_url,
             process=process,
             drain_task=asyncio.get_running_loop().create_task(
-                self._drain(process.stdout, tail)
+                self._drain(process.stdout)
             ),
             poll_interval=args.poll_interval,
         )
@@ -617,7 +618,11 @@ class AsyncPreFormApi(AsyncPreFormApiFacade):
     ) -> None:
         assert process.stdout is not None
         while True:
-            raw = await process.stdout.readline()
+            try:
+                raw = await process.stdout.readline()
+            except ValueError:
+                # a line over the stream limit (64 KiB) that readline() has discarded
+                continue
             if not raw:
                 raise PreFormApiError(
                     "STARTUP_FAILED",
@@ -636,13 +641,10 @@ class AsyncPreFormApi(AsyncPreFormApiFacade):
                 )
 
     @staticmethod
-    async def _drain(stream: asyncio.StreamReader, tail: deque[str]) -> None:
-        # Keep the stdout pipe from filling up; retain a bounded tail.
-        while True:
-            raw = await stream.readline()
-            if not raw:
-                return
-            tail.append(raw.decode(errors="replace"))
+    async def _drain(stream: asyncio.StreamReader) -> None:
+        # Keep the stdout pipe from filling up
+        while await stream.read(_DRAIN_CHUNK):
+            pass
 
     @staticmethod
     async def _reap(process: asyncio.subprocess.Process) -> None:

@@ -39,8 +39,15 @@ def main() -> None:
             print(f"Imported {len(imported.new_models)} model(s): {first.model_id}")
 
             # Without model_ids, each call applies to every model in the scene.
-            preform.auto_orient_models(scene_id=scene.scene_id)
-            preform.auto_support_models(scene_id=scene.scene_id)
+            oriented = preform.auto_orient_models(scene_id=scene.scene_id)
+            supported = preform.auto_support_models(scene_id=scene.scene_id)
+            # Orienting and supporting leave a model they fail for unchanged and list it
+            # in failed_models.
+            failed = oriented.failed_models + supported.failed_models
+            for failure in failed:
+                print(f"Could not prepare model {failure.model_id}: {failure.message}")
+            if failed:
+                sys.exit(1)
             preform.auto_layout_models(scene_id=scene.scene_id)
 
             # A mesh that isn't a closed solid reports is_manifold as False.

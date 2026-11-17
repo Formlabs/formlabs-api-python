@@ -25,6 +25,7 @@ from formlabs_preform_api.api.modifying_models import delete_models as _delete_m
 from formlabs_preform_api.api.modifying_models import dental_hollow_models as _dental_hollow_models
 from formlabs_preform_api.api.modifying_models import drill_holes as _drill_holes
 from formlabs_preform_api.api.modifying_models import duplicate_models as _duplicate_models
+from formlabs_preform_api.api.modifying_models import export_models as _export_models
 from formlabs_preform_api.api.modifying_models import fill_build_chamber as _fill_build_chamber
 from formlabs_preform_api.api.modifying_models import fill_build_platform as _fill_build_platform
 from formlabs_preform_api.api.modifying_models import get_model_body_counts as _get_model_body_counts
@@ -37,6 +38,7 @@ from formlabs_preform_api.api.modifying_models import regenerate_supports as _re
 from formlabs_preform_api.api.modifying_models import repair_models as _repair_models
 from formlabs_preform_api.api.modifying_models import replace_model as _replace_model
 from formlabs_preform_api.api.modifying_models import scale_models as _scale_models
+from formlabs_preform_api.api.modifying_models import send_models_to_scene as _send_models_to_scene
 from formlabs_preform_api.api.modifying_models import split_model_bodies as _split_model_bodies
 from formlabs_preform_api.api.modifying_models import translate_models as _translate_models
 from formlabs_preform_api.api.modifying_models import update_models as _update_models
@@ -101,6 +103,8 @@ from formlabs_preform_api.models import (
     EstimatePrintTimeBody,
     EstimatePrintTimeResponse200,
     EulerAngles,
+    ExportModelsRequest,
+    ExportModelsResponse200,
     FillBuildChamberRequest,
     FillBuildPlatformRequest,
     GetModelBodyCountRequest,
@@ -129,7 +133,9 @@ from formlabs_preform_api.models import (
     ListOperationsBody,
     ListOperationsResponse200,
     ListScenesResponse200,
+    ModelExportMode,
     ModifiedModels,
+    ModifiedModelsWithFailures,
     NewModelIds,
     OnLayoutFailure,
     OnPackFailure,
@@ -159,6 +165,8 @@ from formlabs_preform_api.models import (
     ScaleRequest,
     Scene,
     ScenePosition,
+    SendToSceneRequest,
+    SendToSceneResult,
     SplitModelBodiesRequest,
     SplitModelBodiesResult,
     ThinWallDetectionRequest,
@@ -377,7 +385,7 @@ class AsyncPreFormApiFacade:
         poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
-    ) -> ModifiedModels:
+    ) -> ModifiedModelsWithFailures:
         """Automatically orient models
 
         Args:
@@ -399,7 +407,7 @@ class AsyncPreFormApiFacade:
             _auto_orient_models, poll_interval=poll_interval, timeout=timeout, on_progress=on_progress, body=body
         )
         if isinstance(result, dict):
-            return ModifiedModels.from_dict(result)
+            return ModifiedModelsWithFailures.from_dict(result)
         return result
 
     async def auto_pack_models(
@@ -463,7 +471,7 @@ class AsyncPreFormApiFacade:
         poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
-    ) -> ModifiedModels:
+    ) -> ModifiedModelsWithFailures:
         """Generate supports for models
 
         Args:
@@ -502,7 +510,7 @@ class AsyncPreFormApiFacade:
             _auto_support_models, poll_interval=poll_interval, timeout=timeout, on_progress=on_progress, body=body
         )
         if isinstance(result, dict):
-            return ModifiedModels.from_dict(result)
+            return ModifiedModelsWithFailures.from_dict(result)
         return result
 
     async def cage_models(
@@ -679,6 +687,36 @@ class AsyncPreFormApiFacade:
             model_ids=model_ids,
         )
         return await self.call(_duplicate_models, body=body)
+
+    async def export_models(
+        self: AsyncPreFormApi,
+        *,
+        scene_id: UUID | str,
+        folder_path: str | os.PathLike[str],
+        model_ids: Sequence[UUID | str] | Unset = UNSET,
+        export_mode: ModelExportMode | Unset = UNSET,
+        filename_postfix: str | Unset = '',
+        single_file: bool | Unset = False,
+    ) -> ExportModelsResponse200:
+        """Export models as STL files
+
+        Args:
+            scene_id: The id of the scene containing the models to export.
+            folder_path: Path of an existing directory to write the STL files into.
+            model_ids: Ids of the models to export. Omitted or empty means every model in the scene.
+            export_mode: What processing method to use when exporting each model.
+            filename_postfix: Appended to each exported file's name, before the `.stl` extension.
+            single_file: When true, combine every selected model into a single STL file instead of writing one file per model.
+        """
+        body = ExportModelsRequest(
+            scene_id=scene_id,
+            folder_path=_fspath(folder_path),
+            model_ids=model_ids,
+            export_mode=export_mode,
+            filename_postfix=filename_postfix,
+            single_file=single_file,
+        )
+        return await self.call(_export_models, body=body)
 
     async def fill_build_chamber(
         self: AsyncPreFormApi,
@@ -890,16 +928,19 @@ class AsyncPreFormApiFacade:
         *,
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
+        group_ids: Sequence[UUID | str] | Unset = UNSET,
     ) -> ListModelsResponse200:
-        """List models in a scene
+        """List models and groups in a scene
 
         Args:
             scene_id: The id of the scene containing the models.
-            model_ids: Ids of the models to list. Omitted or empty means every model in the scene.
+            model_ids: Ids of the models to list. If both `model_ids` and `group_ids` are omitted or empty, every model and group in the scene is listed.
+            group_ids: Ids of the groups to list. The models in these groups are also listed. If both `model_ids` and `group_ids` are omitted or empty, every model and group in the scene is listed.
         """
         body = ListModelsRequest(
             scene_id=scene_id,
             model_ids=model_ids,
+            group_ids=group_ids,
         )
         return await self.call(_list_models, body=body)
 
@@ -1025,6 +1066,27 @@ class AsyncPreFormApiFacade:
             model_ids=model_ids,
         )
         return await self.call(_scale_models, body=body)
+
+    async def send_models_to_scene(
+        self: AsyncPreFormApi,
+        *,
+        scene_id: UUID | str,
+        target_scene_id: UUID | str,
+        model_ids: Sequence[UUID | str],
+    ) -> SendToSceneResult:
+        """Send models to another scene
+
+        Args:
+            scene_id: The id of the scene containing the models.
+            target_scene_id: The id of the scene to move the models into. Must differ from `scene_id`.
+            model_ids: Ids of the models to move.
+        """
+        body = SendToSceneRequest(
+            scene_id=scene_id,
+            target_scene_id=target_scene_id,
+            model_ids=model_ids,
+        )
+        return await self.call(_send_models_to_scene, body=body)
 
     async def split_model_bodies(
         self: AsyncPreFormApi,
@@ -1743,7 +1805,7 @@ class PreFormApiFacade:
         poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
-    ) -> ModifiedModels:
+    ) -> ModifiedModelsWithFailures:
         """Automatically orient models
 
         Args:
@@ -1801,7 +1863,7 @@ class PreFormApiFacade:
         poll_interval: float | None = None,
         timeout: float | None = None,
         on_progress: Callable[[float], None] | None = None,
-    ) -> ModifiedModels:
+    ) -> ModifiedModelsWithFailures:
         """Generate supports for models
 
         Args:
@@ -1942,6 +2004,28 @@ class PreFormApiFacade:
             model_ids: Ids of the models to duplicate. Omitted or empty means every model in the scene.
         """
         return self._run(self._async.duplicate_models(scene_id=scene_id, count=count, model_ids=model_ids))
+
+    def export_models(
+        self: PreFormApi,
+        *,
+        scene_id: UUID | str,
+        folder_path: str | os.PathLike[str],
+        model_ids: Sequence[UUID | str] | Unset = UNSET,
+        export_mode: ModelExportMode | Unset = UNSET,
+        filename_postfix: str | Unset = '',
+        single_file: bool | Unset = False,
+    ) -> ExportModelsResponse200:
+        """Export models as STL files
+
+        Args:
+            scene_id: The id of the scene containing the models to export.
+            folder_path: Path of an existing directory to write the STL files into.
+            model_ids: Ids of the models to export. Omitted or empty means every model in the scene.
+            export_mode: What processing method to use when exporting each model.
+            filename_postfix: Appended to each exported file's name, before the `.stl` extension.
+            single_file: When true, combine every selected model into a single STL file instead of writing one file per model.
+        """
+        return self._run(self._async.export_models(scene_id=scene_id, folder_path=folder_path, model_ids=model_ids, export_mode=export_mode, filename_postfix=filename_postfix, single_file=single_file))
 
     def fill_build_chamber(
         self: PreFormApi,
@@ -2085,14 +2169,16 @@ class PreFormApiFacade:
         *,
         scene_id: UUID | str,
         model_ids: Sequence[UUID | str] | Unset = UNSET,
+        group_ids: Sequence[UUID | str] | Unset = UNSET,
     ) -> ListModelsResponse200:
-        """List models in a scene
+        """List models and groups in a scene
 
         Args:
             scene_id: The id of the scene containing the models.
-            model_ids: Ids of the models to list. Omitted or empty means every model in the scene.
+            model_ids: Ids of the models to list. If both `model_ids` and `group_ids` are omitted or empty, every model and group in the scene is listed.
+            group_ids: Ids of the groups to list. The models in these groups are also listed. If both `model_ids` and `group_ids` are omitted or empty, every model and group in the scene is listed.
         """
-        return self._run(self._async.list_models(scene_id=scene_id, model_ids=model_ids))
+        return self._run(self._async.list_models(scene_id=scene_id, model_ids=model_ids, group_ids=group_ids))
 
     def orient_models(
         self: PreFormApi,
@@ -2178,6 +2264,22 @@ class PreFormApiFacade:
             model_ids: Ids of the models to scale. Omitted or empty means every model in the scene.
         """
         return self._run(self._async.scale_models(scene_id=scene_id, scale=scale, model_ids=model_ids))
+
+    def send_models_to_scene(
+        self: PreFormApi,
+        *,
+        scene_id: UUID | str,
+        target_scene_id: UUID | str,
+        model_ids: Sequence[UUID | str],
+    ) -> SendToSceneResult:
+        """Send models to another scene
+
+        Args:
+            scene_id: The id of the scene containing the models.
+            target_scene_id: The id of the scene to move the models into. Must differ from `scene_id`.
+            model_ids: Ids of the models to move.
+        """
+        return self._run(self._async.send_models_to_scene(scene_id=scene_id, target_scene_id=target_scene_id, model_ids=model_ids))
 
     def split_model_bodies(
         self: PreFormApi,

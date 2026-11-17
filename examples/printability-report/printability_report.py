@@ -156,7 +156,11 @@ def check_printability(
                        "reorient or add drain holes")
             )
 
-    preform.auto_support_models(scene_id=scene_id)
+    # Auto-support leaves a part it fails for unsupported and lists it in failed_models.
+    for failure in preform.auto_support_models(scene_id=scene_id).failed_models:
+        findings[names[str(failure.model_id)]].append(
+            (FAIL, f"could not be supported: {failure.message}")
+        )
     minima = preform.validate_minima(scene_id=scene_id).per_model_results
     for model_id, result in minima.additional_properties.items():
         if result.minima_count:
